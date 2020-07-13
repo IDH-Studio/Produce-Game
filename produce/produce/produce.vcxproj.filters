@@ -19,6 +19,9 @@
     <Filter Include="Classes\Factory">
       <UniqueIdentifier>{5a6b7220-f2d5-4bd2-8b8f-01056d076897}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Player">
+      <UniqueIdentifier>{1305d953-85e3-4498-9e32-a84ccce238a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -30,6 +33,9 @@
     <ClCompile Include="Factory.cpp">
       <Filter>Classes\Factory</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Classes\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="setting.h">
@@ -37,6 +43,9 @@
     </ClInclude>
     <ClInclude Include="Factory.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Classes\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

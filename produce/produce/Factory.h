@@ -1,6 +1,7 @@
 #pragma once
 #include <time.h>
 #include <string>
+#include "Player.h"
 
 typedef struct
 {
@@ -26,7 +27,7 @@ public:
 
 	void operate(int number);
 	void close(int number);
-	void update();
+	void update(Player* player);
 	void render();
 	bool isOperated();
 

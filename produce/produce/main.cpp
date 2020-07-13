@@ -3,7 +3,7 @@
 #include <iostream>
 #include <conio.h>
 
-void Init(SELECT* select, Factory* factory)
+void Init(SELECT* select, Factory** factory, Player** player)
 {
 	setCursor(false);
 	system("mode con: cols=160 Lines=45");
@@ -11,15 +11,17 @@ void Init(SELECT* select, Factory* factory)
 
 	*select = MENU;
 	gameRun = true;
-	factoryOperate(factory, 0);
+	*factory = new Factory[6];
+	factoryOperate(*factory, 0);
+	*player = new Player();
 }
 
-void Update(SELECT* select, Factory* factory)
+void Update(SELECT* select, Factory* factory, Player* player)
 {
 	static int number = 1;
 	int key = 0;
 	for (int i = 0; i < factorySize; i++)
-		factory[i].update();
+		factory[i].update(player);
 
 	if (_kbhit())
 	{
@@ -99,8 +101,10 @@ void Update(SELECT* select, Factory* factory)
 							//공장을 못 닫았으면(이미 닫혀있으면)
 							while (true)
 							{
-								changeBuffer(1, 32, 1, 32, "해당 공장은 이미 닫혀있습니다.");
-								changeBuffer(1, 32, 1, 33, "다른 공장 번호를 선택해주세요.");
+								clearBuffer();
+								writeBuffer(1, 32, "해당 공장은 이미 닫혀있습니다.");
+								writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
+								flippingBuffer();
 								if (_kbhit())
 								{
 									*select = MENU;
@@ -119,7 +123,9 @@ void Update(SELECT* select, Factory* factory)
 				{
 					while (true)
 					{
-						changeBuffer(1, 32, 1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
+						clearBuffer();
+						writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
+						flippingBuffer();
 						if (_kbhit())
 						{
 							*select = MENU;
@@ -134,7 +140,7 @@ void Update(SELECT* select, Factory* factory)
 
 }
 
-void Render(SELECT select, Factory* factory)
+void Render(SELECT select, Factory* factory, Player player)
 {
 	clearBuffer();
 
@@ -156,12 +162,14 @@ void Render(SELECT select, Factory* factory)
 		break;
 	}
 
+	player.renderInfo();
 	flippingBuffer();
 }
 
-void Release(Factory* factory)
+void Release(Factory* factory, Player* player)
 {
 	delete[] factory;
+	delete player;
 
 	const char* over = "Game Over";
 	gotoxy((SHORT)((screenWidth / 2) - (strlen(over) / 2)), (SHORT)(screenHeight / 2));
@@ -173,17 +181,18 @@ void Release(Factory* factory)
 
 int main(int argc, char* argv[])
 {
-	Factory* factory = new Factory[6];
+	Factory* factory = nullptr;
 	SELECT select;
-	Init(&select, factory);
+	Player* player = nullptr;
+	Init(&select, &factory, &player);
 
 	while (gameRun)
 	{
-		Update(&select, factory);
-		Render(select, factory);
+		Update(&select, factory, player);
+		Render(select, factory, *player);
 	}
 
-	Release(factory);
+	Release(factory, player);
 
 	return 0;
 }

@@ -47,7 +47,7 @@ void Factory::close(int number)
 	isOperate = false;
 }
 
-void Factory::update()
+void Factory::update(Player* player)
 {
 	if (isOperate)
 	{
@@ -56,6 +56,7 @@ void Factory::update()
 		{
 			start = clock();
 			++product;
+			player->addProduct();
 		}
 	}
 }
