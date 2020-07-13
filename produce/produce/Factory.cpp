@@ -2,25 +2,25 @@
 #include "setting.h"
 
 
-Factory::Factory() : money(0), factoryNumber(1), isOperate(false)
+Factory::Factory() : product(0), factoryNumber(1), isOperate(false)
 {
 	fRect.x = 0;
 	fRect.y = 0;
 	fRect.w = 0;
 	fRect.h = 0;
 	start = end = 0;
-	showMoney = "money: ";
+	showProduct = "product: ";
 	showNumber = "factory number: ";
 }
 
-Factory::Factory(int number) : money(0), factoryNumber(number), isOperate(false)
+Factory::Factory(int number) : product(0), factoryNumber(number), isOperate(false)
 {
 	fRect.x = number * 50 + 10 - 1;
 	fRect.y = number * 14 + 4;
 	fRect.w = 40;
 	fRect.h = 8;
 	start = end = 0;
-	showMoney = "money: ";
+	showProduct = "product: ";
 	showNumber = "factory number: ";
 }
 
@@ -32,7 +32,7 @@ Factory::~Factory()
 
 void Factory::operate(int number)
 {
-	money = 0;
+	product = 0;
 	factoryNumber = number + 1;
 	fRect.x = ((number % 3) * 50 + 10) - 1;
 	fRect.y = ((number / 3) * 14) + 4;
@@ -40,6 +40,11 @@ void Factory::operate(int number)
 	fRect.h = 8;
 	start = clock();
 	isOperate = true;
+}
+
+void Factory::close(int number)
+{
+	isOperate = false;
 }
 
 void Factory::update()
@@ -50,7 +55,7 @@ void Factory::update()
 		if ((float)(end - start) / CLOCKS_PER_SEC >= 2)
 		{
 			start = clock();
-			++money;
+			++product;
 		}
 	}
 }
@@ -61,8 +66,23 @@ void Factory::render()
 	{
 		drawRect(fRect);
 		writeBuffer(fRect.x + 1, fRect.y + 1, showNumber + std::to_string(factoryNumber));
-		writeBuffer(fRect.x + 1, fRect.y + 2, showMoney + std::to_string(money));
+		writeBuffer(fRect.x + 1, fRect.y + 2, showProduct + std::to_string(product));
 	}
+}
+
+bool Factory::isOperated()
+{
+	return isOperate;
+}
+
+int Factory::getProduct()
+{
+	return product;
+}
+
+int Factory::getFactoryNumber()
+{
+	return factoryNumber;
 }
 
 
@@ -93,7 +113,29 @@ void drawRect(MY_RECT rect)
 	}
 }
 
-void factoryOperate(Factory* factory, int number)
+bool factoryOperate(Factory* factory, int number)
 {
-	factory[number].operate(number);
+	if (factory[number].isOperated())
+	{
+		return false;
+	}
+	else
+	{
+		factory[number].operate(number);
+		return true;
+	}
+}
+
+
+bool factoryClose(Factory* factory, int number)
+{
+	if (factory[number].isOperated())
+	{
+		factory[number].close(number);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }

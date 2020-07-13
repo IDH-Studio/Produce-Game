@@ -36,22 +36,98 @@ void Update(SELECT* select, Factory* factory)
 				gameRun = false;
 			break;
 		case BUILD:
-			if (key == ENTER)
+			if (key == ESCAPE)
+				*select = MENU;
+			else
 			{
-				if (number + 1 <= 6)
-					factoryOperate(factory, number);
-				*select = MENU;
+				if ('1' <= key && key <= '6')
+				{
+					number = key % '0';
+
+					if (1 <= number && number <= 6)
+					{
+						if (!factoryOperate(factory, number - 1))
+						{
+							//공장을 못열었으면(이미 열려있으면)
+							while (true)
+							{
+								clearBuffer();
+								writeBuffer(1, 32, "해당 공장은 이미 열려있습니다.");
+								writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
+								flippingBuffer();
+								if (_kbhit())
+								{
+									*select = MENU;
+									break;
+								}
+							}
+						}
+						else
+						{
+							//공장을 열었으면
+							*select = MENU;
+						}
+					}
+				}
+				else
+				{
+					while (true)
+					{
+						writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
+						if (_kbhit())
+						{
+							*select = MENU;
+							break;
+						}
+					}
+				}
 			}
-			else if (key == ESCAPE)
-				*select = MENU;
 			break;
 		case DESTROY:
-			if (key == ENTER)
-			{
-
-			}
-			else if (key == ESCAPE)
+			if (key == ESCAPE)
 				*select = MENU;
+			else
+			{
+				if ('1' <= key && key <= '6')
+				{
+					number = key % '0';
+
+					if (1 <= number && number <= 6)
+					{
+						if (!factoryClose(factory, number - 1))
+						{
+							//공장을 못 닫았으면(이미 닫혀있으면)
+							while (true)
+							{
+								changeBuffer(1, 32, 1, 32, "해당 공장은 이미 닫혀있습니다.");
+								changeBuffer(1, 32, 1, 33, "다른 공장 번호를 선택해주세요.");
+								if (_kbhit())
+								{
+									*select = MENU;
+									break;
+								}
+							}
+						}
+						else
+						{
+							//공장을 닸았으면
+							*select = MENU;
+						}
+					}
+				}
+				else
+				{
+					while (true)
+					{
+						changeBuffer(1, 32, 1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
+						if (_kbhit())
+						{
+							*select = MENU;
+							break;
+						}
+					}
+				}
+			}
 			break;
 		}
 	}
@@ -73,10 +149,10 @@ void Render(SELECT select, Factory* factory)
 		writeBuffer(1, 33, "2. 공장 파기");
 		break;
 	case BUILD:
-		writeBuffer(1, 32, "공장 생성 부분");
+		writeBuffer(1, 32, "공장 번호를 입력해주세요(1 ~ 6)");
 		break;
 	case DESTROY:
-		writeBuffer(1, 32, "공장 파기 부분");
+		writeBuffer(1, 32, "공장 번호를 입력해주세요(1 ~ 6)");
 		break;
 	}
 
@@ -86,11 +162,11 @@ void Render(SELECT select, Factory* factory)
 void Release(Factory* factory)
 {
 	delete[] factory;
-	deleteBuffer();
 
 	const char* over = "Game Over";
-	gotoxy((screenWidth / 2) - (strlen(over) / 2), screenHeight / 2);
+	gotoxy((SHORT)((screenWidth / 2) - (strlen(over) / 2)), (SHORT)(screenHeight / 2));
 	std::cout << over;
+	deleteBuffer();
 	getchar();
 }
 

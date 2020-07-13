@@ -59,6 +59,30 @@ void clearBuffer()
 	FillConsoleOutputCharacter(hBuffer[nScreenIndex], ' ', screenWidth * screenHeight, Coor, &dw);
 }
 
+void changeBuffer(SHORT originalX, SHORT originalY, SHORT changeX, SHORT changeY, const char* str)
+{
+	DWORD dw;
+	COORD clearPos = { originalX, originalY };
+	COORD writePos = { changeX, changeY };
+
+	FillConsoleOutputCharacter(hBuffer[nScreenIndex], ' ', screenWidth - strlen(str), clearPos, &dw);
+	//flippingBuffer();
+	SetConsoleCursorPosition(hBuffer[nScreenIndex], writePos);
+	WriteFile(hBuffer[nScreenIndex], str, strlen(str), &dw, NULL);
+}
+
+void changeBuffer(SHORT originalX, SHORT originalY, SHORT changeX, SHORT changeY, std::string str)
+{
+	DWORD dw;
+	COORD clearPos = { originalX, originalY };
+	COORD writePos = { changeX, changeY };
+
+	FillConsoleOutputCharacter(hBuffer[nScreenIndex], ' ', screenWidth - str.length(), clearPos, &dw);
+	flippingBuffer();
+	SetConsoleCursorPosition(hBuffer[nScreenIndex], writePos);
+	WriteFile(hBuffer[nScreenIndex], str.c_str(), str.length(), &dw, NULL);
+}
+
 void deleteBuffer()
 {
 	CloseHandle(hBuffer[0]);
