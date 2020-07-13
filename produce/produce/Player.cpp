@@ -36,3 +36,13 @@ void Player::addProduct(int product)
 {
 	this->product += product;
 }
+
+int Player::getMoney()
+{
+	return money;
+}
+
+void Player::setMoney(int money)
+{
+	this->money = money;
+}

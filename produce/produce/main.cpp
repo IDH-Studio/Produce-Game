@@ -27,114 +27,81 @@ void Update(SELECT* select, Factory* factory, Player* player)
 	{
 		key = _getch();
 
-		switch (*select)
+		if (inputError != INPUT_ERROR::NONE)
 		{
-		case MENU:
-			if (key == '1')
-				*select = BUILD;
-			else if (key == '2')
-				*select = DESTROY;
-			else if (key == ESCAPE)
-				gameRun = false;
-			break;
-		case BUILD:
-			if (key == ESCAPE)
-				*select = MENU;
-			else
+			inputError = INPUT_ERROR::NONE;
+		}
+		else
+		{
+			switch (*select)
 			{
-				if ('1' <= key && key <= '6')
-				{
-					number = key % '0';
-
-					if (1 <= number && number <= 6)
-					{
-						if (!factoryOperate(factory, number - 1))
-						{
-							//공장을 못열었으면(이미 열려있으면)
-							while (true)
-							{
-								clearBuffer();
-								writeBuffer(1, 32, "해당 공장은 이미 열려있습니다.");
-								writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
-								flippingBuffer();
-								if (_kbhit())
-								{
-									*select = MENU;
-									break;
-								}
-							}
-						}
-						else
-						{
-							//공장을 열었으면
-							*select = MENU;
-						}
-					}
-				}
+			case SELECT::MENU:
+				if (key == '1')
+					*select = BUILD;
+				else if (key == '2')
+					*select = DESTROY;
+				else if (key == ESCAPE)
+					gameRun = false;
+				break;
+			case SELECT::BUILD:
+				if (key == ESCAPE)
+					*select = MENU;
 				else
 				{
-					while (true)
+					if ('1' <= key && key <= '6')
 					{
-						writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
-						if (_kbhit())
-						{
-							*select = MENU;
-							break;
-						}
-					}
-				}
-			}
-			break;
-		case DESTROY:
-			if (key == ESCAPE)
-				*select = MENU;
-			else
-			{
-				if ('1' <= key && key <= '6')
-				{
-					number = key % '0';
+						number = key % '0';
 
-					if (1 <= number && number <= 6)
-					{
-						if (!factoryClose(factory, number - 1))
+						if (1 <= number && number <= 6)
 						{
-							//공장을 못 닫았으면(이미 닫혀있으면)
-							while (true)
+							if (!factoryOperate(factory, number - 1))
 							{
-								clearBuffer();
-								writeBuffer(1, 32, "해당 공장은 이미 닫혀있습니다.");
-								writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
-								flippingBuffer();
-								if (_kbhit())
-								{
-									*select = MENU;
-									break;
-								}
+								//공장을 못열었으면(이미 열려있으면)
+								inputError = INPUT_ERROR::EXIST;
+							}
+							else
+							{
+								//공장을 열었으면
+								*select = MENU;
 							}
 						}
-						else
-						{
-							//공장을 닸았으면
-							*select = MENU;
-						}
+					}
+					else
+					{
+						inputError = INPUT_ERROR::RANGE;
 					}
 				}
+				break;
+			case SELECT::DESTROY:
+				if (key == ESCAPE)
+					*select = MENU;
 				else
 				{
-					while (true)
+					if ('1' <= key && key <= '6')
 					{
-						clearBuffer();
-						writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
-						flippingBuffer();
-						if (_kbhit())
+						number = key % '0';
+
+						if (1 <= number && number <= 6)
 						{
-							*select = MENU;
-							break;
+							if (!factoryClose(factory, number - 1))
+							{
+								//공장을 못 닫았으면(이미 닫혀있으면)
+								inputError = INPUT_ERROR::EXIST;
+							}
+							else
+							{
+								//공장을 닸았으면
+								*select = MENU;
+							}
 						}
 					}
+					else
+					{
+						inputError = INPUT_ERROR::RANGE;
+					}
 				}
+				break;
 			}
-			break;
 		}
 	}
 
@@ -148,18 +115,53 @@ void Render(SELECT select, Factory* factory, Player player)
 		factory[i].render();
 	writeBuffer(0, 31, "================================================================================================================================================================");
 
-	switch (select)
+	if (inputError == INPUT_ERROR::NONE)
 	{
-	case MENU:
-		writeBuffer(1, 32, "1. 공장 생성");
-		writeBuffer(1, 33, "2. 공장 파기");
-		break;
-	case BUILD:
-		writeBuffer(1, 32, "공장 번호를 입력해주세요(1 ~ 6)");
-		break;
-	case DESTROY:
-		writeBuffer(1, 32, "공장 번호를 입력해주세요(1 ~ 6)");
-		break;
+		switch (select)
+		{
+		case SELECT::MENU:
+			writeBuffer(1, 32, "1. 공장 생성");
+			writeBuffer(1, 33, "2. 공장 파기");
+			break;
+		case SELECT::BUILD:
+			writeBuffer(1, 32, "공장 번호를 입력해주세요(1 ~ 6)");
+			break;
+		case SELECT::DESTROY:
+			writeBuffer(1, 32, "공장 번호를 입력해주세요(1 ~ 6)");
+			break;
+		}
+	}
+	else if (inputError == INPUT_ERROR::EXIST)
+	{
+		switch (select)
+		{
+		case SELECT::MENU:
+			writeBuffer(1, 32, "1. 공장 생성");
+			writeBuffer(1, 33, "2. 공장 파기");
+			break;
+		case SELECT::BUILD:
+			writeBuffer(1, 32, "해당 공장은 이미 열려있습니다.");
+			writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
+			break;
+		case SELECT::DESTROY:
+			writeBuffer(1, 32, "해당 공장은 이미 닫혀있습니다.");
+			writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
+			break;
+		}
+	}
+	else if (inputError == INPUT_ERROR::RANGE)
+	{
+		switch (select)
+		{
+		case SELECT::MENU:
+			writeBuffer(1, 32, "1. 공장 생성");
+			writeBuffer(1, 33, "2. 공장 파기");
+			break;
+		case SELECT::BUILD:
+		case SELECT::DESTROY:
+			writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
+			break;
+		}
 	}
 
 	player.renderInfo();
@@ -182,7 +184,7 @@ void Release(Factory* factory, Player* player)
 int main(int argc, char* argv[])
 {
 	Factory* factory = nullptr;
-	SELECT select;
+	enum SELECT select;
 	Player* player = nullptr;
 	Init(&select, &factory, &player);
 

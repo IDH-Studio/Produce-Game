@@ -20,4 +20,8 @@ public:
 
 	void addProduct();
 	void addProduct(int product);
+
+	int getMoney();
+
+	void setMoney(int money);
 };

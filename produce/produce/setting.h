@@ -15,6 +15,7 @@ extern HANDLE hBuffer[2];
 extern int nScreenIndex;
 
 extern bool gameRun;
+extern enum INPUT_ERROR inputError;
 extern char factorySize;
 
 enum SELECT
@@ -24,14 +25,19 @@ enum SELECT
 	DESTROY
 };
 
+enum INPUT_ERROR
+{
+	NONE,
+	EXIST,
+	RANGE
+};
+
 
 void createBuffer();
 void writeBuffer(int x, int y, const char* str);
 void writeBuffer(int x, int y, std::string str);
 void flippingBuffer();
 void clearBuffer();
-//void changeBuffer(SHORT originalX, SHORT originalY, SHORT changeX, SHORT changeY, const char* str);
-//void changeBuffer(SHORT originalX, SHORT originalY, SHORT changeX, SHORT changeY, std::string str);
 void deleteBuffer();
 
 void gotoxy(SHORT x, SHORT y);

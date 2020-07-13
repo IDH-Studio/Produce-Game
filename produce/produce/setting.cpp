@@ -7,6 +7,7 @@ HANDLE hBuffer[2];
 int nScreenIndex;
 
 bool gameRun;
+enum INPUT_ERROR inputError = NONE;
 char factorySize = 6;
 
 
@@ -58,30 +59,6 @@ void clearBuffer()
 	DWORD dw;
 	FillConsoleOutputCharacter(hBuffer[nScreenIndex], ' ', screenWidth * screenHeight, Coor, &dw);
 }
-
-//void changeBuffer(SHORT originalX, SHORT originalY, SHORT changeX, SHORT changeY, const char* str)
-//{
-//	DWORD dw;
-//	COORD clearPos = { originalX, originalY };
-//	COORD writePos = { changeX, changeY };
-//
-//	FillConsoleOutputCharacter(hBuffer[nScreenIndex], ' ', screenWidth - strlen(str), clearPos, &dw);
-//	//flippingBuffer();
-//	SetConsoleCursorPosition(hBuffer[nScreenIndex], writePos);
-//	WriteFile(hBuffer[nScreenIndex], str, strlen(str), &dw, NULL);
-//}
-//
-//void changeBuffer(SHORT originalX, SHORT originalY, SHORT changeX, SHORT changeY, std::string str)
-//{
-//	DWORD dw;
-//	COORD clearPos = { originalX, originalY };
-//	COORD writePos = { changeX, changeY };
-//
-//	FillConsoleOutputCharacter(hBuffer[nScreenIndex], ' ', screenWidth - str.length(), clearPos, &dw);
-//	flippingBuffer();
-//	SetConsoleCursorPosition(hBuffer[nScreenIndex], writePos);
-//	WriteFile(hBuffer[nScreenIndex], str.c_str(), str.length(), &dw, NULL);
-//}
 
 void deleteBuffer()
 {
