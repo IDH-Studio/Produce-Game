@@ -11,6 +11,9 @@ private:
 
 	int product;
 	std::string showProduct;
+
+	int fiber;
+	std::string showFiber;
 public:
 	Player();
 	Player(std::string name);
@@ -20,6 +23,8 @@ public:
 
 	void addProduct();
 	void addProduct(int product);
+	void addFiber();
+	void addFiber(int fiber);
 	void addMoney();
 	void addMoney(int money);
 

@@ -2,16 +2,18 @@
 #include "setting.h"
 
 
-Player::Player() : money(0), product(0), name("unknown")
+Player::Player() : money(0), product(0), name("unknown"), fiber(0)
 {
 	showProduct = "product: ";
 	showMoney = "money: ";
+	showFiber = "fiber: ";
 }
 
-Player::Player(std::string name) : money(0), product(0), name(name)
+Player::Player(std::string name) : money(0), product(0), name(name), fiber(0)
 {
 	showProduct = "product: ";
 	showMoney = "money: ";
+	showFiber = "fiber: ";
 }
 
 
@@ -24,7 +26,8 @@ void Player::renderInfo()
 {
 	writeBuffer(screenWidth - 16, 32, name);
 	writeBuffer(screenWidth - 16, 33, showProduct + std::to_string(product));
-	writeBuffer(screenWidth - 16, 34, showMoney + std::to_string(money));
+	writeBuffer(screenWidth - 16, 34, showFiber + std::to_string(fiber));
+	writeBuffer(screenWidth - 16, 35, showMoney + std::to_string(money));
 }
 
 void Player::addProduct()
@@ -36,6 +39,17 @@ void Player::addProduct(int product)
 {
 	this->product += product;
 }
+
+void Player::addFiber()
+{
+	++this->fiber;
+}
+
+void Player::addFiber(int fiber)
+{
+	this->fiber += fiber;
+}
+
 
 void Player::addMoney()
 {

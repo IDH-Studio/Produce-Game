@@ -15,11 +15,18 @@ class Factory
 {
 private:
 	int product;
-	int factoryNumber;
 	bool isOperate;
+	int factoryNumber;
 	clock_t start, end;
 	FACTORY_RECT fRect;
 	std::string showProduct, showNumber;
+protected:
+	void setShowProduct(std::string productName);
+	void addProduct();
+	clock_t getStart();
+	clock_t getEnd();
+	void setStart();
+	void setEnd();
 public:
 	Factory();
 	Factory(int number);

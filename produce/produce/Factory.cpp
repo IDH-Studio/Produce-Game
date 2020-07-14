@@ -2,6 +2,37 @@
 #include "setting.h"
 
 
+void Factory::setShowProduct(std::string productName)
+{
+	showProduct = productName;
+}
+
+void Factory::addProduct()
+{
+	++product;
+}
+
+clock_t Factory::getStart()
+{
+	return start;
+}
+
+clock_t Factory::getEnd()
+{
+	return end;
+}
+
+void Factory::setStart()
+{
+	start = clock();
+}
+
+void Factory::setEnd()
+{
+	end = clock();
+}
+
+
 Factory::Factory() : product(0), factoryNumber(1), isOperate(false)
 {
 	fRect.x = factoryNumber * 50 + 10 - 1;
