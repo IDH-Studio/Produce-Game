@@ -1,23 +1,28 @@
-#include "Factory.h"
+#include "FiberFarm.h"
 #include "setting.h"
 
-Factory::Factory()
+
+
+FiberFarm::FiberFarm()
 {
-	setWhatNumber("factory ");
+	setShowProduct("fiber: ");
+	setWhatNumber("fiber farm ");
 }
 
-Factory::Factory(int number) : BaseObject(number)
+
+FiberFarm::FiberFarm(int number) : BaseObject(number)
 {
-	setWhatNumber("factory ");
+	setShowProduct("fiber: ");
+	setWhatNumber("fiber farm ");
 }
 
 
-Factory::~Factory()
+FiberFarm::~FiberFarm()
 {
-	
+
 }
 
-void Factory::update(Player* player)
+void FiberFarm::update(Player* player)
 {
 	if (checkActivate())
 	{
@@ -26,12 +31,12 @@ void Factory::update(Player* player)
 		{
 			setLastTime();
 			addProduct();
-			player->addProduct();
+			player->addFiber();
 		}
 	}
 }
 
-void Factory::render()
+void FiberFarm::render()
 {
 	// border
 	writeBuffer(getRect().x, getRect().y,				"========================================");
@@ -51,17 +56,17 @@ void Factory::render()
 	}
 	else
 	{
-		writeBuffer(getRect().x + 1, getRect().y + 1, "buy: " + std::to_string(objectCost.factoryCost));
+		writeBuffer(getRect().x + 1, getRect().y + 1, "buy: " + std::to_string(objectCost.fiberCost));
 	}
 }
 
-bool Factory::canBuy(Player* player, int number)
+bool FiberFarm::canBuy(Player* player, int number)
 {
-	if (player->getMoney() >= objectCost.factoryCost)
+	if (player->getMoney() >= objectCost.fiberCost)
 	{
-		player->giveMoney(objectCost.factoryCost);
+		player->giveMoney(objectCost.fiberCost);
 		active(number);
-		objectCost.factoryCost += (objectCost.factoryCost * 0.25);
+		objectCost.fiberCost += (objectCost.fiberCost * 0.25);
 		return true;
 	}
 	else

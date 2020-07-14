@@ -2,14 +2,14 @@
 #include "setting.h"
 
 
-Player::Player() : money(0), product(0), name("unknown"), fiber(0)
+Player::Player() : money(objectCost.factoryCost), product(0), name("unknown"), fiber(0)
 {
 	showProduct = "product: ";
 	showMoney = "money: ";
 	showFiber = "fiber: ";
 }
 
-Player::Player(std::string name) : money(0), product(0), name(name), fiber(0)
+Player::Player(std::string name) : money(objectCost.factoryCost), product(0), name(name), fiber(0)
 {
 	showProduct = "product: ";
 	showMoney = "money: ";
@@ -50,37 +50,97 @@ void Player::addFiber(int fiber)
 	this->fiber += fiber;
 }
 
-
-void Player::addMoney()
-{
-	++this->money;
-}
-
-void Player::addMoney(int money)
-{
-	this->money += money;
-}
-
-void Player::setProduct(int amount)
-{
-	if (amount < 0)
-	{
-		this->product += amount;
-	}
-	else
-	{
-		this->product -= amount;
-	}
-}
-
 int Player::getMoney()
 {
 	return money;
 }
 
+int Player::giveMoney(int money)
+{
+	if (money < 0)
+	{
+		this->money += money;
+		return -money;
+	}
+	else
+	{
+		this->money -= money;
+		return money;
+	}
+}
+
+void Player::receiveMoney(int money)
+{
+	if (money < 0)
+	{
+		this->money -= money;
+	}
+	else
+	{
+		this->money += money;
+	}
+}
+
+int Player::giveProduct(int amount)
+{
+	if (amount < 0)
+	{
+		this->product += amount;
+		return amount;
+	}
+	else
+	{
+		this->product -= amount;
+		return amount;
+	}
+}
+
+void Player::receiveProduct(int amount)
+{
+	if (amount < 0)
+	{
+		this->product -= amount;
+	}
+	else
+	{
+		this->product += amount;
+	}
+}
+
+int Player::giveFiber(int amount)
+{
+	if (amount < 0)
+	{
+		this->fiber += amount;
+		return amount;
+	}
+	else
+	{
+		this->fiber -= amount;
+		return amount;
+	}
+}
+
+void Player::receiveFiber(int amount)
+{
+	if (amount < 0)
+	{
+		this->fiber -= amount;
+	}
+	else
+	{
+		this->fiber += amount;
+	}
+}
+
 int Player::getProduct()
 {
 	return product;
+}
+
+int Player::getFiber()
+{
+	return fiber;
 }
 
 void Player::setMoney(int money)

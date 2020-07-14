@@ -13,6 +13,36 @@
 #define LEFT_ARROW 75
 #define RIGHT_ARROW 77
 
+namespace setting
+{
+	enum SELECT
+	{
+		MENU,
+		BUILD,
+		DESTROY,
+	};
+
+	enum AREA
+	{
+		FACTORY,
+		FIBER,
+	};
+
+	enum INPUT_ERROR
+	{
+		NONE,
+		EXIST,
+		RANGE,
+	};
+
+	struct COST
+	{
+		unsigned short factoryCost;
+		unsigned short fiberCost;
+	};
+};
+using namespace setting;
+
 extern short screenWidth;
 extern short screenHeight;
 
@@ -20,29 +50,10 @@ extern HANDLE hBuffer[2];
 extern int nScreenIndex;
 
 extern bool gameRun;
+extern bool isPause;
 extern enum INPUT_ERROR inputError;
-extern char factorySize;
-
-enum SELECT
-{
-	MENU,
-	BUILD,
-	DESTROY,
-};
-
-enum AREA
-{
-	FACTORY,
-	FIBER,
-};
-
-enum INPUT_ERROR
-{
-	NONE,
-	EXIST,
-	RANGE,
-};
-
+extern struct COST objectCost;
+extern char objectSize;
 
 void createBuffer();
 void writeBuffer(int x, int y, const char* str);

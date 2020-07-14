@@ -1,14 +1,13 @@
 #pragma once
 #include "BaseObject.h"
 
-
-class Factory : public BaseObject
+class FiberFarm : public BaseObject
 {
 public:
-	Factory();
-	Factory(int number);
-	~Factory();
-	
+	FiberFarm();
+	FiberFarm(int number);
+	~FiberFarm();
+
 	void update(Player* player);
 	void render();
 	bool canBuy(Player* player, int number);

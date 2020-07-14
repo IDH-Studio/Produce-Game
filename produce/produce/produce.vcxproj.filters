@@ -25,7 +25,10 @@
     <Filter Include="Classes\Store">
       <UniqueIdentifier>{f0ac7a72-4ee6-4270-ba3d-e7881fafa578}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Fiber Factory">
+    <Filter Include="Classes\Base Object">
+      <UniqueIdentifier>{c05a523f-70f0-4cbe-9ec9-d10f36a782df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Fiber Farm">
       <UniqueIdentifier>{5116c546-5fd1-447b-b666-0ec167147ab5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -45,8 +48,11 @@
     <ClCompile Include="Store.cpp">
       <Filter>Classes\Store</Filter>
     </ClCompile>
-    <ClCompile Include="FiberFactory.cpp">
-      <Filter>Classes\Fiber Factory</Filter>
+    <ClCompile Include="BaseObject.cpp">
+      <Filter>Classes\Base Object</Filter>
+    </ClCompile>
+    <ClCompile Include="FiberFarm.cpp">
+      <Filter>Classes\Fiber Farm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -59,11 +65,14 @@
     <ClInclude Include="Store.h">
       <Filter>Classes\Store</Filter>
     </ClInclude>
-    <ClInclude Include="FiberFactory.h">
-      <Filter>Classes\Fiber Factory</Filter>
-    </ClInclude>
     <ClInclude Include="Factory.h">
       <Filter>Classes\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseObject.h">
+      <Filter>Classes\Base Object</Filter>
+    </ClInclude>
+    <ClInclude Include="FiberFarm.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

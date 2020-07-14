@@ -7,8 +7,10 @@ HANDLE hBuffer[2];
 int nScreenIndex;
 
 bool gameRun;
+bool isPause;
 enum INPUT_ERROR inputError = NONE;
-char factorySize = 6;
+struct COST objectCost = { 80, 100 };
+char objectSize = 6;
 
 
 void createBuffer()

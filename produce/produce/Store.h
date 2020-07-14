@@ -1,16 +1,34 @@
 #pragma once
 #include "Player.h"
 
-enum SELECT_ITEM
+namespace store
 {
-	EMPTY,
-	PRODUCT,
-};
+	enum SELECT_ITEM
+	{
+		EMPTY,
+		PRODUCT,
+		FIBER,
+	};
+
+	struct Price
+	{
+		int product;
+		int fiber;
+	};
+
+	struct Quantity
+	{
+		int product;
+		int fiber;
+	};
+}
+using namespace store;
 
 class Store
 {
 private:
-	int productPrice;
+	struct Quantity quantity;
+	struct Price price;
 	Player* customer;
 	bool isOpen;
 	enum SELECT_ITEM sellItem;

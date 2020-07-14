@@ -1,11 +1,18 @@
 #include "Factory.h"
 #include "setting.h"
 #include "Store.h"
-#include "FiberFactory.h"
+#include "FiberFarm.h"
 #include <iostream>
 #include <conio.h>
 
-void Init(SELECT* select, Factory** factory, Player** player, Store** store, AREA* area, FiberFactory** fiberFactory)
+/*
+	TODO
+	일시정지 메뉴
+	공장, 농장 등을 생성할 때 가격이 있음 -> 완료
+	올바른 에러 메세지 출력
+*/
+
+void Init(SELECT* select, Factory factory[], Player** player, Store** store, AREA* area, FiberFarm fiberFarm[])
 {
 	setCursor(false);
 	system("mode con: cols=160 Lines=45");
@@ -14,363 +21,377 @@ void Init(SELECT* select, Factory** factory, Player** player, Store** store, ARE
 	*select = MENU;
 	*area = AREA::FACTORY;
 	gameRun = true;
-	*factory = new Factory[6];
-	*fiberFactory = new FiberFactory[6];
-	factoryOperate(*factory, 0);
+	isPause = false;
+	for (int i = 0; i < objectSize; i++)
+	{
+		factory[i] = Factory(i);
+		fiberFarm[i] = FiberFarm(i);
+	}
 	*player = new Player();
 	*store = new Store();
+	factory[0].canBuy(*player, 0);
 }
 
-void Update(SELECT* select, Factory* factory, Player* player, Store* store, AREA* area, FiberFactory* fiberFactory)
+void Update(SELECT* select, Factory* factory, Player* player, Store* store, AREA* area, FiberFarm* fiberFarm)
 {
 	static int number = 1;
 	int key = 0;
-	for (int i = 0; i < factorySize; i++)
-	{
-		factory[i].update(player);
-		fiberFactory[i].update(player);
-	}
 
-	if (store->isOpened())
+	if (!isPause)
 	{
-		store->update();
-	}
-	else
-	{
-		if (_kbhit())
+		for (int i = 0; i < objectSize; i++)
 		{
-			key = _getch();
+			factory[i].update(player);
+			fiberFarm[i].update(player);
+		}
 
-			if (inputError != INPUT_ERROR::NONE)
+		if (store->isOpened())
+		{
+			store->update();
+		}
+		else
+		{
+			if (_kbhit())
 			{
-				inputError = INPUT_ERROR::NONE;
-			}
-			else
-			{
-				if (*area == AREA::FACTORY)
+				key = _getch();
+
+				if (inputError != INPUT_ERROR::NONE)
 				{
-					if (key == ARROW)
+					inputError = INPUT_ERROR::NONE;
+				}
+				else
+				{
+					if (*area == AREA::FACTORY)
 					{
-						key = _getch();
-						if (key == RIGHT_ARROW)
-							*area = AREA::FIBER;
-					}
-					else
-					{
-						switch (*select)
+						// 공장
+						if (key == ARROW)
 						{
-						case SELECT::MENU:
-							if (key == '1')
+							key = _getch();
+							if (key == RIGHT_ARROW)
 							{
-								*select = BUILD;
-							}
-							else if (key == '2')
-							{
-								*select = DESTROY;
-							}
-							else if (key == '3')
-							{
-								store->visit(player);
-							}
-							else if (key == ESCAPE)
-							{
-								gameRun = false;
-							}
-							break;
-						case SELECT::BUILD:
-							if (key == ESCAPE)
+								*area = AREA::FIBER;
 								*select = MENU;
-							else
+							}
+						}
+						else
+						{
+							switch (*select)
 							{
-								if ('1' <= key && key <= '6')
-								{
-									number = key % '0';
-
-									if (1 <= number && number <= 6)
-									{
-										if (!factoryOperate(factory, number - 1))
-										{
-											//공장을 못열었으면(이미 열려있으면)
-											inputError = INPUT_ERROR::EXIST;
-										}
-										else
-										{
-											//공장을 열었으면
-											*select = MENU;
-										}
-									}
-								}
+							case SELECT::MENU:
+								if (key == '1')
+									*select = BUILD;
+								else if (key == '2')
+									*select = DESTROY;
+								else if (key == '3')
+									store->visit(player);
+								else if (key == ESCAPE)
+									gameRun = false;
+								break;
+							case SELECT::BUILD:
+								if (key == ESCAPE)
+									*select = MENU;
 								else
 								{
-									inputError = INPUT_ERROR::RANGE;
-								}
-							}
-							break;
-						case SELECT::DESTROY:
-							if (key == ESCAPE)
-								*select = MENU;
-							else
-							{
-								if ('1' <= key && key <= '6')
-								{
-									number = key % '0';
-
-									if (1 <= number && number <= 6)
+									if ('1' <= key && key <= '6')
 									{
-										if (!factoryClose(factory, number - 1))
+										number = key % '0';
+
+										if (1 <= number && number <= 6)
 										{
-											//공장을 못 닫았으면(이미 닫혀있으면)
-											inputError = INPUT_ERROR::EXIST;
-										}
-										else
-										{
-											//공장을 닸았으면
-											*select = MENU;
+											if (factory[number - 1].canBuy(player, number - 1))
+											{
+												//공장을 샀으면
+												*select = MENU;
+											}
+											else
+											{
+												//공장을 못샀으면(이미 샀으면)
+												inputError = INPUT_ERROR::EXIST;
+											}
 										}
 									}
+									else
+									{
+										inputError = INPUT_ERROR::RANGE;
+									}
 								}
+								break;
+							case SELECT::DESTROY:
+								if (key == ESCAPE)
+									*select = MENU;
 								else
 								{
-									inputError = INPUT_ERROR::RANGE;
+									if ('1' <= key && key <= '6')
+									{
+										number = key % '0';
+
+										if (1 <= number && number <= 6)
+										{
+											if (factory[number - 1].close())
+											{
+												//공장을 닫았으면
+												*select = MENU;
+											}
+											else
+											{
+												//공장을 못 닫았으면(이미 닫혀있으면)
+												inputError = INPUT_ERROR::EXIST;
+											}
+										}
+									}
+									else
+									{
+										inputError = INPUT_ERROR::RANGE;
+									}
 								}
+								break;
 							}
-							break;
 						}
 					}
-				}
-				else if (*area == AREA::FIBER)
-				{
-					if (key == ARROW)
+					else if (*area == AREA::FIBER)
 					{
-						key = _getch();
-						if (key == LEFT_ARROW)
-							*area = AREA::FACTORY;
-						else if (key == RIGHT_ARROW) {}
-					}
-					else
-					{
-						switch (*select)
+						// 섬유 농장
+						if (key == ARROW)
 						{
-						case SELECT::MENU:
-							if (key == '1')
+							key = _getch();
+							if (key == LEFT_ARROW)
 							{
-								*select = BUILD;
-							}
-							else if (key == '2')
-							{
-								*select = DESTROY;
-							}
-							else if (key == '3')
-							{
-								store->visit(player);
-							}
-							else if (key == ESCAPE)
-							{
-								gameRun = false;
-							}
-							break;
-						case SELECT::BUILD:
-							if (key == ESCAPE)
+								*area = AREA::FACTORY;
 								*select = MENU;
-							else
+							}
+							else if (key == RIGHT_ARROW)
 							{
-								if ('1' <= key && key <= '6')
-								{
-									number = key % '0';
-
-									if (1 <= number && number <= 6)
-									{
-										if (!factoryOperate(fiberFactory, number - 1))
-										{
-											//공장을 못열었으면(이미 열려있으면)
-											inputError = INPUT_ERROR::EXIST;
-										}
-										else
-										{
-											//공장을 열었으면
-											*select = MENU;
-										}
-									}
-								}
+								// 다른 지역이 생겼을 때 추가
+							}
+						}
+						else
+						{
+							switch (*select)
+							{
+							case SELECT::MENU:
+								if (key == '1')
+									*select = BUILD;
+								else if (key == '2')
+									*select = DESTROY;
+								else if (key == '3')
+									store->visit(player);
+								else if (key == ESCAPE)
+									gameRun = false;
+								break;
+							case SELECT::BUILD:
+								if (key == ESCAPE)
+									*select = MENU;
 								else
 								{
-									inputError = INPUT_ERROR::RANGE;
-								}
-							}
-							break;
-						case SELECT::DESTROY:
-							if (key == ESCAPE)
-								*select = MENU;
-							else
-							{
-								if ('1' <= key && key <= '6')
-								{
-									number = key % '0';
-
-									if (1 <= number && number <= 6)
+									if ('1' <= key && key <= '6')
 									{
-										if (!factoryClose(fiberFactory, number - 1))
+										number = key % '0';
+
+										if (1 <= number && number <= 6)
 										{
-											//공장을 못 닫았으면(이미 닫혀있으면)
-											inputError = INPUT_ERROR::EXIST;
-										}
-										else
-										{
-											//공장을 닸았으면
-											*select = MENU;
+											if (fiberFarm[number - 1].canBuy(player, number - 1))
+											{
+												//섬유 농장을 샀으면
+												*select = MENU;
+											}
+											else
+											{
+												//섬유 농장을 못샀으면(이미 샀으면)
+												inputError = INPUT_ERROR::EXIST;
+											}
 										}
 									}
+									else
+									{
+										inputError = INPUT_ERROR::RANGE;
+									}
 								}
+								break;
+							case SELECT::DESTROY:
+								if (key == ESCAPE)
+									*select = MENU;
 								else
 								{
-									inputError = INPUT_ERROR::RANGE;
+									if ('1' <= key && key <= '6')
+									{
+										number = key % '0';
+
+										if (1 <= number && number <= 6)
+										{
+											if (fiberFarm[number - 1].close())
+											{
+												//섬유 농장을 닫았으면
+												*select = MENU;
+											}
+											else
+											{
+												//섬유 농장을 못 닫았으면(이미 닫혀있으면)
+												inputError = INPUT_ERROR::EXIST;
+											}
+										}
+									}
+									else
+									{
+										inputError = INPUT_ERROR::RANGE;
+									}
 								}
+								break;
 							}
-							break;
 						}
 					}
 				}
 			}
 		}
+	}
+	else
+	{
+		// ESC를 눌렀을 때
+		
 	}
 }
 
-void Render(SELECT select, Factory* factory, Player player, Store* store, AREA area, FiberFactory* fiberFactory)
+void Render(SELECT select, Factory* factory, Player player, Store* store, AREA area, FiberFarm* fiberFarm)
 {
 	clearBuffer();
-
-	writeBuffer(0, 31, "================================================================================================================================================================");
-
-	if (store->isOpened())
+	if (!isPause)
 	{
-		store->render();
+		writeBuffer(0, 31, "================================================================================================================================================================");
+
+		if (store->isOpened())
+		{
+			store->render();
+		}
+		else
+		{
+			if (area == AREA::FACTORY)
+			{
+				writeBuffer(1, 43, "공장");
+				for (int i = 0; i < objectSize; i++)
+				{
+					factory[i].render();
+				}
+
+				if (inputError == INPUT_ERROR::NONE)
+				{
+					switch (select)
+					{
+					case SELECT::MENU:
+						writeBuffer(1, 32, "1. 공장 생성");
+						writeBuffer(1, 33, "2. 공장 파기");
+						writeBuffer(1, 34, "3. 상점");
+						break;
+					case SELECT::BUILD:
+						writeBuffer(1, 32, "공장 번호를 입력해주세요(1 ~ 6)");
+						break;
+					case SELECT::DESTROY:
+						writeBuffer(1, 32, "공장 번호를 입력해주세요(1 ~ 6)");
+						break;
+					}
+				}
+				else if (inputError == INPUT_ERROR::EXIST)
+				{
+					switch (select)
+					{
+					case SELECT::MENU:
+						writeBuffer(1, 32, "1. 공장 생성");
+						writeBuffer(1, 33, "2. 공장 파기");
+						break;
+					case SELECT::BUILD:
+						writeBuffer(1, 32, "해당 공장은 이미 열려있습니다.");
+						writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
+						break;
+					case SELECT::DESTROY:
+						writeBuffer(1, 32, "해당 공장은 이미 닫혀있습니다.");
+						writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
+						break;
+					}
+				}
+				else if (inputError == INPUT_ERROR::RANGE)
+				{
+					switch (select)
+					{
+					case SELECT::MENU:
+						writeBuffer(1, 32, "1. 공장 생성");
+						writeBuffer(1, 33, "2. 공장 파기");
+						break;
+					case SELECT::BUILD:
+					case SELECT::DESTROY:
+						writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
+						break;
+					}
+				}
+			}
+			else if (area == AREA::FIBER)
+			{
+				writeBuffer(1, 43, "섬유 농장");
+				for (int i = 0; i < objectSize; i++)
+				{
+					fiberFarm[i].render();
+				}
+
+				if (inputError == INPUT_ERROR::NONE)
+				{
+					switch (select)
+					{
+					case SELECT::MENU:
+						writeBuffer(1, 32, "1. 섬유 농장 생성");
+						writeBuffer(1, 33, "2. 섬유 농장 파기");
+						writeBuffer(1, 34, "3. 상점");
+						break;
+					case SELECT::BUILD:
+						writeBuffer(1, 32, "섬유 농장 번호를 입력해주세요(1 ~ 6)");
+						break;
+					case SELECT::DESTROY:
+						writeBuffer(1, 32, "섬유 농장 번호를 입력해주세요(1 ~ 6)");
+						break;
+					}
+				}
+				else if (inputError == INPUT_ERROR::EXIST)
+				{
+					switch (select)
+					{
+					case SELECT::MENU:
+						writeBuffer(1, 32, "1. 섬유 농장 생성");
+						writeBuffer(1, 33, "2. 섬유 농장 파기");
+						break;
+					case SELECT::BUILD:
+						writeBuffer(1, 32, "해당 섬유 농장은 이미 열려있습니다.");
+						writeBuffer(1, 33, "다른 섬유 농장 번호를 선택해주세요.");
+						break;
+					case SELECT::DESTROY:
+						writeBuffer(1, 32, "해당 섬유 농장은 이미 닫혀있습니다.");
+						writeBuffer(1, 33, "다른 섬유 농장 번호를 선택해주세요.");
+						break;
+					}
+				}
+				else if (inputError == INPUT_ERROR::RANGE)
+				{
+					switch (select)
+					{
+					case SELECT::MENU:
+						writeBuffer(1, 32, "1. 섬유 농장 생성");
+						writeBuffer(1, 33, "2. 섬유 농장 파기");
+						break;
+					case SELECT::BUILD:
+					case SELECT::DESTROY:
+						writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
+						break;
+					}
+				}
+			}
+		}
+
+		player.renderInfo();
 	}
 	else
 	{
-		if (area == AREA::FACTORY)
-		{
-			for (int i = 0; i < factorySize; i++)
-			{
-				factory[i].render();
-			}
-
-			if (inputError == INPUT_ERROR::NONE)
-			{
-				switch (select)
-				{
-				case SELECT::MENU:
-					writeBuffer(1, 32, "1. 공장 생성");
-					writeBuffer(1, 33, "2. 공장 파기");
-					writeBuffer(1, 34, "3. 상점");
-					break;
-				case SELECT::BUILD:
-					writeBuffer(1, 32, "공장 번호를 입력해주세요(1 ~ 6)");
-					break;
-				case SELECT::DESTROY:
-					writeBuffer(1, 32, "공장 번호를 입력해주세요(1 ~ 6)");
-					break;
-				}
-			}
-			else if (inputError == INPUT_ERROR::EXIST)
-			{
-				switch (select)
-				{
-				case SELECT::MENU:
-					writeBuffer(1, 32, "1. 공장 생성");
-					writeBuffer(1, 33, "2. 공장 파기");
-					break;
-				case SELECT::BUILD:
-					writeBuffer(1, 32, "해당 공장은 이미 열려있습니다.");
-					writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
-					break;
-				case SELECT::DESTROY:
-					writeBuffer(1, 32, "해당 공장은 이미 닫혀있습니다.");
-					writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
-					break;
-				}
-			}
-			else if (inputError == INPUT_ERROR::RANGE)
-			{
-				switch (select)
-				{
-				case SELECT::MENU:
-					writeBuffer(1, 32, "1. 공장 생성");
-					writeBuffer(1, 33, "2. 공장 파기");
-					break;
-				case SELECT::BUILD:
-				case SELECT::DESTROY:
-					writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
-					break;
-				}
-			}
-		}
-		else if (area == AREA::FIBER)
-		{
-			for (int i = 0; i < factorySize; i++)
-			{
-				fiberFactory[i].render();
-			}
-
-			if (inputError == INPUT_ERROR::NONE)
-			{
-				switch (select)
-				{
-				case SELECT::MENU:
-					writeBuffer(1, 32, "1. 섬유 농장 생성");
-					writeBuffer(1, 33, "2. 섬유 농장 파기");
-					writeBuffer(1, 34, "3. 상점");
-					break;
-				case SELECT::BUILD:
-					writeBuffer(1, 32, "섬유 농장 번호를 입력해주세요(1 ~ 6)");
-					break;
-				case SELECT::DESTROY:
-					writeBuffer(1, 32, "섬유 농장 번호를 입력해주세요(1 ~ 6)");
-					break;
-				}
-			}
-			else if (inputError == INPUT_ERROR::EXIST)
-			{
-				switch (select)
-				{
-				case SELECT::MENU:
-					writeBuffer(1, 32, "1. 섬유 농장 생성");
-					writeBuffer(1, 33, "2. 섬유 농장 파기");
-					break;
-				case SELECT::BUILD:
-					writeBuffer(1, 32, "해당 섬유 농장은 이미 열려있습니다.");
-					writeBuffer(1, 33, "다른 섬유 농장 번호를 선택해주세요.");
-					break;
-				case SELECT::DESTROY:
-					writeBuffer(1, 32, "해당 섬유 농장은 이미 닫혀있습니다.");
-					writeBuffer(1, 33, "다른 섬유 농장 번호를 선택해주세요.");
-					break;
-				}
-			}
-			else if (inputError == INPUT_ERROR::RANGE)
-			{
-				switch (select)
-				{
-				case SELECT::MENU:
-					writeBuffer(1, 32, "1. 섬유 농장 생성");
-					writeBuffer(1, 33, "2. 섬유 농장 파기");
-					break;
-				case SELECT::BUILD:
-				case SELECT::DESTROY:
-					writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
-					break;
-				}
-			}
-		}
+		// ESC를 눌렀을 때
 	}
-
-	player.renderInfo();
 	flippingBuffer();
 }
 
-void Release(Factory* factory, Player* player, Store* store, FiberFactory* fiberFactory)
+void Release(Player* player, Store* store)
 {
-	delete[] factory;
-	delete[] fiberFactory;
 	delete player;
 	delete store;
 
@@ -384,24 +405,24 @@ void Release(Factory* factory, Player* player, Store* store, FiberFactory* fiber
 
 int main(int argc, char* argv[])
 {
-	Factory* factory = nullptr;
-	FiberFactory* fiberFactory = nullptr;
+	Factory factory[6];
+	FiberFarm fiberFarm[6];
 	Player* player = nullptr;
 	Store* store = nullptr;
 
 	enum SELECT select;
 	enum AREA area;
 
-	Init(&select, &factory, &player, &store, &area, &fiberFactory);
+	Init(&select, factory, &player, &store, &area, fiberFarm);
 
 	while (gameRun)
 	{
-		Update(&select, factory, player, store, &area, fiberFactory);
-		Render(select, factory, *player, store, area, fiberFactory);
-		Sleep(60);
+		Update(&select, factory, player, store, &area, fiberFarm);
+		Render(select, factory, *player, store, area, fiberFarm);
+		Sleep(33);
 	}
 
-	Release(factory, player, store, fiberFactory);
+	Release(player, store);
 
 	return 0;
 }

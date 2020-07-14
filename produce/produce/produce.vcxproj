@@ -119,16 +119,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseObject.cpp" />
     <ClCompile Include="Factory.cpp" />
-    <ClCompile Include="FiberFactory.cpp" />
+    <ClCompile Include="FiberFarm.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="setting.cpp" />
     <ClCompile Include="Store.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseObject.h" />
     <ClInclude Include="Factory.h" />
-    <ClInclude Include="FiberFactory.h" />
+    <ClInclude Include="FiberFarm.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="setting.h" />
     <ClInclude Include="Store.h" />

@@ -25,12 +25,17 @@ public:
 	void addProduct(int product);
 	void addFiber();
 	void addFiber(int fiber);
-	void addMoney();
-	void addMoney(int money);
+
+	int giveMoney(int money);
+	void receiveMoney(int money);
+	int giveProduct(int amount);
+	void receiveProduct(int amount);
+	int giveFiber(int amount);
+	void receiveFiber(int amount);
 
 	int getMoney();
 	int getProduct();
+	int getFiber();
 
 	void setMoney(int money);
-	void setProduct(int amount);
 };
