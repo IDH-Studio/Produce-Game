@@ -25,6 +25,9 @@
     <Filter Include="Classes\Store">
       <UniqueIdentifier>{f0ac7a72-4ee6-4270-ba3d-e7881fafa578}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Fiber Factory">
+      <UniqueIdentifier>{5116c546-5fd1-447b-b666-0ec167147ab5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -42,6 +45,9 @@
     <ClCompile Include="Store.cpp">
       <Filter>Classes\Store</Filter>
     </ClCompile>
+    <ClCompile Include="FiberFactory.cpp">
+      <Filter>Classes\Fiber Factory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="setting.h">
@@ -55,6 +61,9 @@
     </ClInclude>
     <ClInclude Include="Store.h">
       <Filter>Classes\Store</Filter>
+    </ClInclude>
+    <ClInclude Include="FiberFactory.h">
+      <Filter>Classes\Fiber Factory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

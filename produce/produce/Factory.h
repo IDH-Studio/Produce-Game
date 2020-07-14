@@ -37,6 +37,5 @@ public:
 };
 
 
-void drawRect(MY_RECT rect);
 bool factoryOperate(Factory* factory, int number);
 bool factoryClose(Factory* factory, int number);

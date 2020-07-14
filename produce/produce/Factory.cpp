@@ -4,10 +4,10 @@
 
 Factory::Factory() : product(0), factoryNumber(1), isOperate(false)
 {
-	fRect.x = 0;
-	fRect.y = 0;
-	fRect.w = 0;
-	fRect.h = 0;
+	fRect.x = factoryNumber * 50 + 10 - 1;
+	fRect.y = factoryNumber * 14 + 4;
+	fRect.w = 40;
+	fRect.h = 8;
 	start = end = 0;
 	showProduct = "product: ";
 	showNumber = "factory number: ";
@@ -65,7 +65,17 @@ void Factory::render()
 {
 	if (isOperate)
 	{
-		drawRect(fRect);
+		// border
+		writeBuffer(fRect.x, fRect.y,			"========================================");
+		writeBuffer(fRect.x, fRect.y + 1,		"|                                      |");
+		writeBuffer(fRect.x, fRect.y + 2,		"|                                      |");
+		writeBuffer(fRect.x, fRect.y + 3,		"|                                      |");
+		writeBuffer(fRect.x, fRect.y + 4,		"|                                      |");
+		writeBuffer(fRect.x, fRect.y + 5,		"|                                      |");
+		writeBuffer(fRect.x, fRect.y + 6,		"|                                      |");
+		writeBuffer(fRect.x, fRect.y + 7,		"|                                      |");
+		writeBuffer(fRect.x, fRect.y + fRect.h, "========================================");
+		
 		writeBuffer(fRect.x + 1, fRect.y + 1, showNumber + std::to_string(factoryNumber));
 		writeBuffer(fRect.x + 1, fRect.y + 2, showProduct + std::to_string(product));
 	}
@@ -86,33 +96,6 @@ int Factory::getFactoryNumber()
 	return factoryNumber;
 }
 
-
-void drawRect(MY_RECT rect)
-{
-	// Top
-	for (int i = 0; i < rect.w; i++)
-	{
-		writeBuffer(rect.x + i, rect.y, "=");
-	}
-
-	// Bottom
-	for (int i = 0; i < rect.w; i++)
-	{
-		writeBuffer(rect.x + i, rect.y + rect.h, "=");
-	}
-
-	// Left
-	for (int i = 0; i < rect.h; i++)
-	{
-		writeBuffer(rect.x, rect.y + i, "|");
-	}
-
-	// Right
-	for (int i = 0; i < rect.h; i++)
-	{
-		writeBuffer(rect.x + rect.w, rect.y + i, "|");
-	}
-}
 
 bool factoryOperate(Factory* factory, int number)
 {

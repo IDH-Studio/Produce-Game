@@ -4,7 +4,7 @@
 enum SELECT_ITEM
 {
 	EMPTY,
-	PRODUCT
+	PRODUCT,
 };
 
 class Store

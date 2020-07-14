@@ -7,6 +7,11 @@
 #define ENTER 13
 #define ESCAPE 27
 
+#define ARROW 224
+#define UP_ARROW 72
+#define DOWN_ARROW 80
+#define LEFT_ARROW 75
+#define RIGHT_ARROW 77
 
 extern short screenWidth;
 extern short screenHeight;
@@ -22,14 +27,20 @@ enum SELECT
 {
 	MENU,
 	BUILD,
-	DESTROY
+	DESTROY,
+};
+
+enum AREA
+{
+	FACTORY,
+	FIBER,
 };
 
 enum INPUT_ERROR
 {
 	NONE,
 	EXIST,
-	RANGE
+	RANGE,
 };
 
 
