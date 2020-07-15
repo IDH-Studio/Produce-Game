@@ -61,7 +61,7 @@ bool Factory::canBuy(Player* player, int number)
 	{
 		player->giveMoney(objectCost.factoryCost);
 		active(number);
-		objectCost.factoryCost += (objectCost.factoryCost * 0.25);
+		objectCost.factoryCost += static_cast<unsigned short>(objectCost.factoryCost * 0.25);
 		return true;
 	}
 	else

@@ -22,13 +22,19 @@ void Init(SELECT* select, Factory factory[], Player** player, Store** store, ARE
 	*area = AREA::FACTORY;
 	gameRun = true;
 	isPause = false;
+	pauseArrow.x = screenWidth / 2 - 7;
+	pauseArrow.y = screenHeight / 2 - 1;
+	pauseArrow.arrow = '>';
+
 	for (int i = 0; i < objectSize; i++)
 	{
 		factory[i] = Factory(i);
 		fiberFarm[i] = FiberFarm(i);
 	}
+
 	*player = new Player();
 	*store = new Store();
+
 	factory[0].canBuy(*player, 0);
 }
 
@@ -85,7 +91,7 @@ void Update(SELECT* select, Factory* factory, Player* player, Store* store, AREA
 								else if (key == '3')
 									store->visit(player);
 								else if (key == ESCAPE)
-									gameRun = false;
+									isPause = true;
 								break;
 							case SELECT::BUILD:
 								if (key == ESCAPE)
@@ -176,7 +182,7 @@ void Update(SELECT* select, Factory* factory, Player* player, Store* store, AREA
 								else if (key == '3')
 									store->visit(player);
 								else if (key == ESCAPE)
-									gameRun = false;
+									isPause = true;
 								break;
 							case SELECT::BUILD:
 								if (key == ESCAPE)
@@ -246,7 +252,40 @@ void Update(SELECT* select, Factory* factory, Player* player, Store* store, AREA
 	else
 	{
 		// ESC를 눌렀을 때
-		
+		if (_kbhit())
+		{
+			key = _getch();
+			if (key == ARROW)
+			{
+				key = _getch();
+				if (key == UP_ARROW && !(pauseState & PAUSE_RESUME))
+				{
+					pauseArrow.y -= 2;
+					pauseState >>= 1;
+				}
+				else if (key == DOWN_ARROW && !(pauseState & PAUSE_EXIT))
+				{
+					pauseArrow.y += 2;
+					pauseState <<= 1;
+				}
+			}
+			else
+			{
+				if (key == ESCAPE)
+					isPause = false;
+				else if (key == ENTER)
+				{
+					if (pauseState & PAUSE_RESUME)
+					{
+						isPause = false;
+					}
+					else if (pauseState & PAUSE_EXIT)
+					{
+						gameRun = false;
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -386,6 +425,11 @@ void Render(SELECT select, Factory* factory, Player player, Store* store, AREA a
 	else
 	{
 		// ESC를 눌렀을 때
+		// 게임으로 돌아가기
+		// 게임 종료
+		writeBuffer(screenWidth / 2 - 5, screenHeight / 2 - 1, "게임으로 돌아가기");
+		writeBuffer(screenWidth / 2 - 2, screenHeight / 2 + 1, "게임 종료");
+		writeBuffer(pauseArrow.x, pauseArrow.y, pauseArrow.arrow);
 	}
 	flippingBuffer();
 }

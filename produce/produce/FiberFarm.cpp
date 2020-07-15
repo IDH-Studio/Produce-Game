@@ -66,7 +66,7 @@ bool FiberFarm::canBuy(Player* player, int number)
 	{
 		player->giveMoney(objectCost.fiberCost);
 		active(number);
-		objectCost.fiberCost += (objectCost.fiberCost * 0.25);
+		objectCost.fiberCost += static_cast<unsigned short>(objectCost.fiberCost * 0.25);
 		return true;
 	}
 	else

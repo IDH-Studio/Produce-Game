@@ -13,6 +13,9 @@
 #define LEFT_ARROW 75
 #define RIGHT_ARROW 77
 
+#define PAUSE_RESUME 0b00000001
+#define PAUSE_EXIT 0b00000010
+
 namespace setting
 {
 	enum SELECT
@@ -40,6 +43,13 @@ namespace setting
 		unsigned short factoryCost;
 		unsigned short fiberCost;
 	};
+
+	struct PauseArrow
+	{
+		int x;
+		int y;
+		std::string arrow;
+	};
 };
 using namespace setting;
 
@@ -51,13 +61,17 @@ extern int nScreenIndex;
 
 extern bool gameRun;
 extern bool isPause;
+extern char pauseState;
+extern struct PauseArrow pauseArrow;
+
 extern enum INPUT_ERROR inputError;
 extern struct COST objectCost;
 extern char objectSize;
 
+
 void createBuffer();
-void writeBuffer(int x, int y, const char* str);
-void writeBuffer(int x, int y, std::string str);
+void writeBuffer(SHORT x, SHORT y, const char* str);
+void writeBuffer(SHORT x, SHORT y, std::string str);
 void flippingBuffer();
 void clearBuffer();
 void deleteBuffer();

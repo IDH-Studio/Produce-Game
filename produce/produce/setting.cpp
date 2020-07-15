@@ -8,6 +8,9 @@ int nScreenIndex;
 
 bool gameRun;
 bool isPause;
+char pauseState = 0b00000001;
+struct PauseArrow pauseArrow;
+
 enum INPUT_ERROR inputError = NONE;
 struct COST objectCost = { 80, 100 };
 char objectSize = 6;
@@ -31,7 +34,7 @@ void createBuffer()
 	SetConsoleWindowInfo(hBuffer[1], TRUE, &rect);
 }
 
-void writeBuffer(int x, int y, const char* str)
+void writeBuffer(SHORT x, SHORT y, const char* str)
 {
 	DWORD dw;
 	COORD pos = { x, y };
@@ -40,7 +43,7 @@ void writeBuffer(int x, int y, const char* str)
 	WriteFile(hBuffer[nScreenIndex], str, strlen(str), &dw, NULL);
 }
 
-void writeBuffer(int x, int y, std::string str)
+void writeBuffer(SHORT x, SHORT y, std::string str)
 {
 	DWORD dw;
 	COORD pos = { x, y };
