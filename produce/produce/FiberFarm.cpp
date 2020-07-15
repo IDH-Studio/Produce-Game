@@ -60,17 +60,24 @@ void FiberFarm::render()
 	}
 }
 
-bool FiberFarm::canBuy(Player* player, int number)
+char FiberFarm::canBuy(Player* player, int number)
 {
-	if (player->getMoney() >= objectCost.fiberCost)
+	if (checkActivate())
 	{
-		player->giveMoney(objectCost.fiberCost);
-		active(number);
-		objectCost.fiberCost += static_cast<unsigned short>(objectCost.fiberCost * 0.25);
-		return true;
+		return CANT_OPEN;
 	}
 	else
 	{
-		return false;
+		if (player->getMoney() >= objectCost.fiberCost)
+		{
+			player->giveMoney(objectCost.fiberCost);
+			active(number);
+			objectCost.fiberCost += static_cast<unsigned short>(objectCost.fiberCost * 0.25);
+			return CAN_OPEN;
+		}
+		else
+		{
+			return CANT_BUY;
+		}
 	}
 }

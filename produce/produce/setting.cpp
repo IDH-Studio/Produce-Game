@@ -12,6 +12,8 @@ char pauseState = 0b00000001;
 struct PauseArrow pauseArrow;
 
 enum INPUT_ERROR inputError = NONE;
+struct ErrorMessage errorMessage;
+
 struct COST objectCost = { 80, 100 };
 char objectSize = 6;
 

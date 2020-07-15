@@ -36,6 +36,15 @@ namespace setting
 		NONE,
 		EXIST,
 		RANGE,
+		MONEY,
+	};
+
+	struct ErrorMessage
+	{
+		std::string activateError;
+		std::string deactivateError;
+		std::string buyError;
+		std::string rangeError;
 	};
 
 	struct COST
@@ -65,6 +74,8 @@ extern char pauseState;
 extern struct PauseArrow pauseArrow;
 
 extern enum INPUT_ERROR inputError;
+extern struct ErrorMessage errorMessage;
+
 extern struct COST objectCost;
 extern char objectSize;
 

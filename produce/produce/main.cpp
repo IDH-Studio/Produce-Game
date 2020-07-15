@@ -7,9 +7,9 @@
 
 /*
 	TODO
-	일시정지 메뉴
+	일시정지 메뉴 -> 완료
 	공장, 농장 등을 생성할 때 가격이 있음 -> 완료
-	올바른 에러 메세지 출력
+	올바른 에러 메세지 출력 -> 완료
 */
 
 void Init(SELECT* select, Factory factory[], Player** player, Store** store, AREA* area, FiberFarm fiberFarm[])
@@ -25,6 +25,11 @@ void Init(SELECT* select, Factory factory[], Player** player, Store** store, ARE
 	pauseArrow.x = screenWidth / 2 - 7;
 	pauseArrow.y = screenHeight / 2 - 1;
 	pauseArrow.arrow = '>';
+
+	errorMessage.activateError = "해당 건물은 이미 열려있습니다.\n다른 번호를 선택해주세요.";
+	errorMessage.deactivateError = "해당 건물은 이미 닫혀있습니다.\n다른 번호를 선택해주세요.";
+	errorMessage.buyError = "돈이 부족합니다.\n돈이나 더 모아오세요.";
+	errorMessage.rangeError = "1 ~ 6사이의 번호를 입력해주세요.";
 
 	for (int i = 0; i < objectSize; i++)
 	{
@@ -104,15 +109,21 @@ void Update(SELECT* select, Factory* factory, Player* player, Store* store, AREA
 
 										if (1 <= number && number <= 6)
 										{
-											if (factory[number - 1].canBuy(player, number - 1))
+											char tryBuy = factory[number - 1].canBuy(player, number - 1);
+											if (tryBuy & CAN_OPEN)
 											{
 												//공장을 샀으면
 												*select = MENU;
 											}
-											else
+											else if (tryBuy & CANT_OPEN)
 											{
-												//공장을 못샀으면(이미 샀으면)
+												//이미 열려있으면
 												inputError = INPUT_ERROR::EXIST;
+											}
+											else if (tryBuy & CANT_BUY)
+											{
+												//돈이 부족하면
+												inputError = INPUT_ERROR::MONEY;
 											}
 										}
 									}
@@ -195,15 +206,20 @@ void Update(SELECT* select, Factory* factory, Player* player, Store* store, AREA
 
 										if (1 <= number && number <= 6)
 										{
-											if (fiberFarm[number - 1].canBuy(player, number - 1))
+											char tryBuy = fiberFarm[number - 1].canBuy(player, number - 1);
+											if (tryBuy & CAN_OPEN)
 											{
 												//섬유 농장을 샀으면
 												*select = MENU;
 											}
-											else
+											else if (tryBuy & CANT_OPEN)
 											{
 												//섬유 농장을 못샀으면(이미 샀으면)
 												inputError = INPUT_ERROR::EXIST;
+											}
+											else if (tryBuy & CANT_BUY)
+											{
+												inputError = INPUT_ERROR::MONEY;
 											}
 										}
 									}
@@ -331,17 +347,13 @@ void Render(SELECT select, Factory* factory, Player player, Store* store, AREA a
 				{
 					switch (select)
 					{
-					case SELECT::MENU:
-						writeBuffer(1, 32, "1. 공장 생성");
-						writeBuffer(1, 33, "2. 공장 파기");
-						break;
 					case SELECT::BUILD:
-						writeBuffer(1, 32, "해당 공장은 이미 열려있습니다.");
-						writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
+						writeBuffer(1, 32, errorMessage.activateError.substr(0, errorMessage.activateError.find('\n')));
+						writeBuffer(1, 33, errorMessage.activateError.substr(errorMessage.activateError.find('\n') + 1));
 						break;
 					case SELECT::DESTROY:
-						writeBuffer(1, 32, "해당 공장은 이미 닫혀있습니다.");
-						writeBuffer(1, 33, "다른 공장 번호를 선택해주세요.");
+						writeBuffer(1, 32, errorMessage.deactivateError.substr(0, errorMessage.deactivateError.find('\n')));
+						writeBuffer(1, 33, errorMessage.deactivateError.substr(errorMessage.deactivateError.find('\n') + 1));
 						break;
 					}
 				}
@@ -349,15 +361,16 @@ void Render(SELECT select, Factory* factory, Player player, Store* store, AREA a
 				{
 					switch (select)
 					{
-					case SELECT::MENU:
-						writeBuffer(1, 32, "1. 공장 생성");
-						writeBuffer(1, 33, "2. 공장 파기");
-						break;
 					case SELECT::BUILD:
 					case SELECT::DESTROY:
-						writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
+						writeBuffer(1, 32, errorMessage.rangeError);
 						break;
 					}
+				}
+				else if (inputError == INPUT_ERROR::MONEY)
+				{
+					writeBuffer(1, 32, errorMessage.buyError.substr(0, errorMessage.buyError.find('\n')));
+					writeBuffer(1, 33, errorMessage.buyError.substr(errorMessage.buyError.find('\n') + 1));
 				}
 			}
 			else if (area == AREA::FIBER)
@@ -389,17 +402,13 @@ void Render(SELECT select, Factory* factory, Player player, Store* store, AREA a
 				{
 					switch (select)
 					{
-					case SELECT::MENU:
-						writeBuffer(1, 32, "1. 섬유 농장 생성");
-						writeBuffer(1, 33, "2. 섬유 농장 파기");
-						break;
 					case SELECT::BUILD:
-						writeBuffer(1, 32, "해당 섬유 농장은 이미 열려있습니다.");
-						writeBuffer(1, 33, "다른 섬유 농장 번호를 선택해주세요.");
+						writeBuffer(1, 32, errorMessage.activateError.substr(0, errorMessage.activateError.find('\n')));
+						writeBuffer(1, 33, errorMessage.activateError.substr(errorMessage.activateError.find('\n') + 1));
 						break;
 					case SELECT::DESTROY:
-						writeBuffer(1, 32, "해당 섬유 농장은 이미 닫혀있습니다.");
-						writeBuffer(1, 33, "다른 섬유 농장 번호를 선택해주세요.");
+						writeBuffer(1, 32, errorMessage.deactivateError.substr(0, errorMessage.deactivateError.find('\n')));
+						writeBuffer(1, 33, errorMessage.deactivateError.substr(errorMessage.deactivateError.find('\n') + 1));
 						break;
 					}
 				}
@@ -407,15 +416,16 @@ void Render(SELECT select, Factory* factory, Player player, Store* store, AREA a
 				{
 					switch (select)
 					{
-					case SELECT::MENU:
-						writeBuffer(1, 32, "1. 섬유 농장 생성");
-						writeBuffer(1, 33, "2. 섬유 농장 파기");
-						break;
 					case SELECT::BUILD:
 					case SELECT::DESTROY:
-						writeBuffer(1, 32, "1 ~ 6사이의 번호를 입력해주세요.");
+						writeBuffer(1, 32, errorMessage.rangeError);
 						break;
 					}
+				}
+				else if (inputError == INPUT_ERROR::MONEY)
+				{
+					writeBuffer(1, 32, errorMessage.buyError.substr(0, errorMessage.buyError.find('\n')));
+					writeBuffer(1, 33, errorMessage.buyError.substr(errorMessage.buyError.find('\n') + 1));
 				}
 			}
 		}
@@ -439,11 +449,12 @@ void Release(Player* player, Store* store)
 	delete player;
 	delete store;
 
-	const char* over = "Game Over";
+	deleteBuffer();
+	/*const char* over = "Game Over";
 	gotoxy((SHORT)((screenWidth / 2) - (strlen(over) / 2)), (SHORT)(screenHeight / 2));
 	std::cout << over;
 	deleteBuffer();
-	getchar();
+	getchar();*/
 }
 
 

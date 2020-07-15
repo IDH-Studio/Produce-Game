@@ -113,7 +113,7 @@ bool BaseObject::close()
 
 void BaseObject::update(Player* player)
 {
-	if (isActivate)
+	/*if (isActivate)
 	{
 		curTime = clock();
 		if (static_cast<float>(curTime - lastTime) / CLOCKS_PER_SEC >= 2)
@@ -122,7 +122,7 @@ void BaseObject::update(Player* player)
 			++product;
 			player->addProduct();
 		}
-	}
+	}*/
 }
 
 void BaseObject::render()
@@ -149,20 +149,9 @@ void BaseObject::render()
 	//}
 }
 
-bool BaseObject::canBuy(Player* player, int number)
+char BaseObject::canBuy(Player* player, int number)
 {
-	/*
-	if (player->getMoney() >= objectCost.factoryCost)
-	{
-		player->setMoney(objectCost.factoryCost);
-		active(number);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-	*/
+	
 }
 
 // getter

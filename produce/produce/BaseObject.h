@@ -3,6 +3,10 @@
 #include <string>
 #include "Player.h"
 
+#define CAN_OPEN 0b00000001
+#define CANT_OPEN 0b00000010
+#define CANT_BUY 0b00000100
+
 typedef struct
 {
 	int x;
@@ -38,9 +42,9 @@ public:
 
 	void active(int number);
 	bool close();
-	void update(Player* player);
-	void render();
-	bool canBuy(Player* player, int number);
+	virtual void update(Player* player) = 0;
+	virtual void render() = 0;
+	virtual char canBuy(Player* player, int number) = 0;
 
 	// getter
 	bool checkActivate();

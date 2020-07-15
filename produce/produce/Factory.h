@@ -11,5 +11,5 @@ public:
 	
 	void update(Player* player);
 	void render();
-	bool canBuy(Player* player, int number);
+	char canBuy(Player* player, int number);
 };

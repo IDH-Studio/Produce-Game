@@ -55,17 +55,24 @@ void Factory::render()
 	}
 }
 
-bool Factory::canBuy(Player* player, int number)
+char Factory::canBuy(Player* player, int number)
 {
-	if (player->getMoney() >= objectCost.factoryCost)
+	if (checkActivate())
 	{
-		player->giveMoney(objectCost.factoryCost);
-		active(number);
-		objectCost.factoryCost += static_cast<unsigned short>(objectCost.factoryCost * 0.25);
-		return true;
+		return CANT_OPEN;
 	}
 	else
 	{
-		return false;
+		if (player->getMoney() >= objectCost.factoryCost)
+		{
+			player->giveMoney(objectCost.factoryCost);
+			active(number);
+			objectCost.factoryCost += static_cast<unsigned short>(objectCost.factoryCost * 0.25);
+			return CAN_OPEN;
+		}
+		else
+		{
+			return CANT_BUY;
+		}
 	}
 }
