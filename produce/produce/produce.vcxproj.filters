@@ -34,6 +34,9 @@
     <Filter Include="Classes\Fabric Factory">
       <UniqueIdentifier>{3db9f833-d20a-43fd-8ce1-bbb53f1fe76d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Game">
+      <UniqueIdentifier>{25ea8622-902f-4f97-96f4-eb3764c45880}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -60,6 +63,9 @@
     <ClCompile Include="FabricFactory.cpp">
       <Filter>Classes\Fabric Factory</Filter>
     </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Classes\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="setting.h">
@@ -82,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="BaseObject.h">
       <Filter>Classes\Base Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Classes\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
