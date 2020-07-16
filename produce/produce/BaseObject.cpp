@@ -1,5 +1,4 @@
 #include "BaseObject.h"
-#include "setting.h"
 
 
 // constructor, destructor
@@ -12,10 +11,14 @@ BaseObject::BaseObject() : product(0), objectNumber(1), isActivate(false)
 	lastTime = curTime = 0;
 	showProduct = "product: ";
 	showNumber = "number: ";
+	errorMessage.activateError = "해당 건물은 이미 열려있습니다.\n다른 번호를 선택해주세요.";
+	errorMessage.deactivateError = "해당 건물은 이미 닫혀있습니다.\n다른 번호를 선택해주세요.";
+	errorMessage.buyError = "돈이 부족합니다.\n돈이나 더 모아오세요.";
+	errorMessage.rangeError = "1 ~ 6사이의 번호를 입력해주세요.";
 }
 
 
-BaseObject::BaseObject(int number) : product(0), objectNumber(number), isActivate(false)
+BaseObject::BaseObject(int number) : product(0), objectNumber(number + 1), isActivate(false)
 {
 	rect.x = ((number % 3) * 50 + 10) - 1;
 	rect.y = ((number / 3) * 14) + 4;
@@ -24,6 +27,10 @@ BaseObject::BaseObject(int number) : product(0), objectNumber(number), isActivat
 	lastTime = curTime = 0;
 	showProduct = "product: ";
 	showNumber = "number: ";
+	errorMessage.activateError = "해당 건물은 이미 열려있습니다.\n다른 번호를 선택해주세요.";
+	errorMessage.deactivateError = "해당 건물은 이미 닫혀있습니다.\n다른 번호를 선택해주세요.";
+	errorMessage.buyError = "돈이 부족합니다.\n돈이나 더 모아오세요.";
+	errorMessage.rangeError = "1 ~ 6사이의 번호를 입력해주세요.";
 }
 
 
@@ -49,6 +56,49 @@ void BaseObject::addProduct()
 	++product;
 }
 
+void BaseObject::setErrorMessage(std::string error, std::string message)
+{
+	// error : activate, deactivate, buy, range
+	if (error == "activate")
+	{
+		errorMessage.activateError = message;
+	}
+	else if (error == "deactivate")
+	{
+		errorMessage.deactivateError = message;
+	}
+	else if (error == "buy")
+	{
+		errorMessage.buyError = message;
+	}
+	else if (error == "range")
+	{
+		errorMessage.rangeError = message;
+	}
+}
+
+std::string BaseObject::getErrorMessage(std::string error)
+{
+	// error : activate, deactivate, buy, range
+	if (error == "activate")
+	{
+		return errorMessage.activateError;
+	}
+	else if (error == "deactivate")
+	{
+		return errorMessage.deactivateError;
+	}
+	else if (error == "buy")
+	{
+		return errorMessage.buyError;
+	}
+	else if (error == "range")
+	{
+		return errorMessage.rangeError;
+	}
+}
+
+
 clock_t BaseObject::getCurTime()
 {
 	return curTime;
@@ -69,10 +119,12 @@ void BaseObject::setLastTime()
 	lastTime = clock();
 }
 
+
 OBJECT_RECT BaseObject::getRect()
 {
 	return rect;
 }
+
 
 std::string BaseObject::getShowNumber()
 {
@@ -86,6 +138,13 @@ std::string BaseObject::getShowProduct()
 
 
 // public functions
+void BaseObject::active()
+{
+	product = 0;
+	lastTime = clock();
+	isActivate = true;
+}
+
 void BaseObject::active(int number)
 {
 	product = 0;
@@ -110,6 +169,36 @@ bool BaseObject::close()
 		return false;
 	}
 }
+
+void BaseObject::showError(SHORT x, SHORT y, std::string error)
+{
+	// error : activate, deactivate, buy, range
+	if (error == "activate")
+	{
+		setColor(LIGHT_CYAN);
+		writeBuffer(x, y, errorMessage.activateError.substr(0, errorMessage.activateError.find('\n')));
+		writeBuffer(x, y + 1, errorMessage.activateError.substr(errorMessage.activateError.find('\n') + 1));
+	}
+	else if (error == "deactivate")
+	{
+		setColor(LIGHT_CYAN);
+		writeBuffer(x, y, errorMessage.activateError.substr(0, errorMessage.deactivateError.find('\n')));
+		writeBuffer(x, y + 1, errorMessage.activateError.substr(errorMessage.deactivateError.find('\n') + 1));
+	}
+	else if (error == "buy")
+	{
+		setColor(LIGHT_CYAN);
+		writeBuffer(x, y, errorMessage.buyError.substr(0, errorMessage.buyError.find('\n')));
+		setColor(RED);
+		writeBuffer(x, y + 1, errorMessage.buyError.substr(errorMessage.buyError.find('\n') + 1));
+	}
+	else if (error == "range")
+	{
+		setColor(LIGHT_CYAN);
+		writeBuffer(x, y, errorMessage.rangeError);
+	}
+}
+
 
 void BaseObject::update(Player* player)
 {
@@ -147,11 +236,6 @@ void BaseObject::render()
 	//{
 	//	
 	//}
-}
-
-char BaseObject::canBuy(Player* player, int number)
-{
-	
 }
 
 // getter

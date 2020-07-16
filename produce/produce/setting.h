@@ -16,6 +16,23 @@
 #define PAUSE_RESUME 0b00000001
 #define PAUSE_EXIT 0b00000010
 
+#define BLACK 0
+#define BLUE 1
+#define GREEN 2
+#define CYAN 3
+#define RED 4
+#define PURPLE 5
+#define YELLOW 6
+#define WHITE 7
+#define GREY 8
+#define LIGHT_BLUE 9
+#define LIGHT_GREEN 10
+#define LIGHT_CYAN 11
+#define LIGHT_RED 12
+#define LIGHT_PURPLE 13
+#define LIGHT_YELLOW 14
+#define LIGHT_GREY 15
+
 namespace setting
 {
 	enum SELECT
@@ -29,6 +46,7 @@ namespace setting
 	{
 		FACTORY,
 		FIBER,
+		FABRIC,
 	};
 
 	enum INPUT_ERROR
@@ -36,7 +54,7 @@ namespace setting
 		NONE,
 		EXIST,
 		RANGE,
-		MONEY,
+		BUY,
 	};
 
 	struct ErrorMessage
@@ -47,10 +65,17 @@ namespace setting
 		std::string rangeError;
 	};
 
+	struct FabricCost
+	{
+		unsigned short money;
+		unsigned short fiber;
+	};
+
 	struct COST
 	{
 		unsigned short factoryCost;
 		unsigned short fiberCost;
+		struct FabricCost fabricCost;
 	};
 
 	struct PauseArrow
@@ -74,8 +99,8 @@ extern char pauseState;
 extern struct PauseArrow pauseArrow;
 
 extern enum INPUT_ERROR inputError;
-extern struct ErrorMessage errorMessage;
 
+extern char number;
 extern struct COST objectCost;
 extern char objectSize;
 
@@ -89,3 +114,4 @@ void deleteBuffer();
 
 void gotoxy(SHORT x, SHORT y);
 void setCursor(bool visible);
+void setColor(int textColor, int backgroundColor=BLACK);

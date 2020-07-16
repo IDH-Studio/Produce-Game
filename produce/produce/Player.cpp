@@ -2,18 +2,20 @@
 #include "setting.h"
 
 
-Player::Player() : money(objectCost.factoryCost), product(0), name("unknown"), fiber(0)
+Player::Player() : money(objectCost.factoryCost), product(0), name("unknown"), fiber(0), fabric(0)
 {
 	showProduct = "product: ";
 	showMoney = "money: ";
 	showFiber = "fiber: ";
+	showFabric = "fabric: ";
 }
 
-Player::Player(std::string name) : money(objectCost.factoryCost), product(0), name(name), fiber(0)
+Player::Player(std::string name) : money(objectCost.factoryCost), product(0), name(name), fiber(0), fabric(0)
 {
 	showProduct = "product: ";
 	showMoney = "money: ";
 	showFiber = "fiber: ";
+	showFabric = "fabric: ";
 }
 
 
@@ -24,6 +26,7 @@ Player::~Player()
 
 void Player::renderInfo()
 {
+	setColor(WHITE);
 	writeBuffer(screenWidth - 16, 32, name);
 	writeBuffer(screenWidth - 16, 33, showProduct + std::to_string(product));
 	writeBuffer(screenWidth - 16, 34, showFiber + std::to_string(fiber));
@@ -48,6 +51,16 @@ void Player::addFiber()
 void Player::addFiber(int fiber)
 {
 	this->fiber += fiber;
+}
+
+void Player::addFabric()
+{
+	++this->fabric;
+}
+
+void Player::addFabric(int fabric)
+{
+	this->fiber += fabric;
 }
 
 int Player::getMoney()
@@ -133,6 +146,32 @@ void Player::receiveFiber(int amount)
 	}
 }
 
+int Player::giveFabric(int amount)
+{
+	if (amount < 0)
+	{
+		this->fabric += amount;
+		return amount;
+	}
+	else
+	{
+		this->fabric -= amount;
+		return amount;
+	}
+}
+
+void Player::receiveFabric(int amount)
+{
+	if (amount < 0)
+	{
+		this->fabric -= amount;
+	}
+	else
+	{
+		this->fabric += amount;
+	}
+}
+
 int Player::getProduct()
 {
 	return product;
@@ -141,6 +180,11 @@ int Player::getProduct()
 int Player::getFiber()
 {
 	return fiber;
+}
+
+int Player::getFabric()
+{
+	return fabric;
 }
 
 void Player::setMoney(int money)

@@ -31,6 +31,9 @@
     <Filter Include="Classes\Fiber Farm">
       <UniqueIdentifier>{5116c546-5fd1-447b-b666-0ec167147ab5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Fabric Factory">
+      <UniqueIdentifier>{3db9f833-d20a-43fd-8ce1-bbb53f1fe76d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -54,6 +57,9 @@
     <ClCompile Include="FiberFarm.cpp">
       <Filter>Classes\Fiber Farm</Filter>
     </ClCompile>
+    <ClCompile Include="FabricFactory.cpp">
+      <Filter>Classes\Fabric Factory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="setting.h">
@@ -68,11 +74,14 @@
     <ClInclude Include="Factory.h">
       <Filter>Classes\Factory</Filter>
     </ClInclude>
+    <ClInclude Include="FiberFarm.h">
+      <Filter>Classes\Fiber Farm</Filter>
+    </ClInclude>
+    <ClInclude Include="FabricFactory.h">
+      <Filter>Classes\Fabric Factory</Filter>
+    </ClInclude>
     <ClInclude Include="BaseObject.h">
       <Filter>Classes\Base Object</Filter>
-    </ClInclude>
-    <ClInclude Include="FiberFarm.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

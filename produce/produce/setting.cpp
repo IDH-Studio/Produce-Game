@@ -12,9 +12,9 @@ char pauseState = 0b00000001;
 struct PauseArrow pauseArrow;
 
 enum INPUT_ERROR inputError = NONE;
-struct ErrorMessage errorMessage;
 
-struct COST objectCost = { 80, 100 };
+char number = 1;
+struct COST objectCost;
 char objectSize = 6;
 
 
@@ -83,4 +83,10 @@ void setCursor(bool visible)
 {
 	CONSOLE_CURSOR_INFO cursorInfo = { 1, visible };
 	SetConsoleCursorInfo(GET_HANDLE, &cursorInfo);
+}
+
+void setColor(int textColor, int backgroundColor)
+{
+	int code = textColor + backgroundColor * 16;
+	SetConsoleTextAttribute(hBuffer[nScreenIndex], code);
 }
