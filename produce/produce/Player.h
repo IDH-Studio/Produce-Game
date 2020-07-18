@@ -17,6 +17,9 @@ private:
 
 	int fabric;
 	std::string showFabric;
+
+	int cloth;
+	std::string showCloth;
 public:
 	Player();
 	Player(std::string name);
@@ -30,6 +33,8 @@ public:
 	void addFiber(int fiber);
 	void addFabric();
 	void addFabric(int fabric);
+	void addCloth();
+	void addCloth(int cloth);
 
 	int giveMoney(int money);
 	void receiveMoney(int money);
@@ -39,11 +44,14 @@ public:
 	void receiveFiber(int amount);
 	int giveFabric(int amount);
 	void receiveFabric(int amount);
+	int giveCloth(int amount);
+	void receiveCloth(int amount);
 
 	int getMoney();
 	int getProduct();
 	int getFiber();
 	int getFabric();
+	int getCloth();
 
 	void setMoney(int money);
 };

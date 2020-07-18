@@ -9,8 +9,8 @@ BaseObject::BaseObject() : product(0), objectNumber(1), isActivate(false)
 	rect.w = 40;
 	rect.h = 8;
 	lastTime = curTime = 0;
-	showProduct = "product: ";
-	showNumber = "number: ";
+	showProduct = "Product: ";
+	showNumber = "Number: ";
 	errorMessage.activateError = "해당 건물은 이미 열려있습니다.\n다른 번호를 선택해주세요.";
 	errorMessage.deactivateError = "해당 건물은 이미 닫혀있습니다.\n다른 번호를 선택해주세요.";
 	errorMessage.buyError = "돈이 부족합니다.\n돈이나 더 모아오세요.";
@@ -25,8 +25,8 @@ BaseObject::BaseObject(int number) : product(0), objectNumber(number + 1), isAct
 	rect.w = 40;
 	rect.h = 8;
 	lastTime = curTime = 0;
-	showProduct = "product: ";
-	showNumber = "number: ";
+	showProduct = "Product: ";
+	showNumber = "Number: ";
 	errorMessage.activateError = "해당 건물은 이미 열려있습니다.\n다른 번호를 선택해주세요.";
 	errorMessage.deactivateError = "해당 건물은 이미 닫혀있습니다.\n다른 번호를 선택해주세요.";
 	errorMessage.buyError = "돈이 부족합니다.\n돈이나 더 모아오세요.";

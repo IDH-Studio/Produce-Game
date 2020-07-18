@@ -5,13 +5,13 @@
 
 FabricFactory::FabricFactory()
 {
-	setWhatNumber("fabric factory ");
+	setWhatNumber("Fabric Factory ");
 }
 
 
 FabricFactory::FabricFactory(int number) : BaseObject(number)
 {
-	setWhatNumber("fabric factory ");
+	setWhatNumber("Fabric Factory ");
 }
 
 
@@ -58,7 +58,7 @@ void FabricFactory::render()
 	else
 	{
 		setColor(LIGHT_RED);
-		writeBuffer(getRect().x + 1, getRect().y + 2, "need - money: " + 
+		writeBuffer(getRect().x + 1, getRect().y + 2, "need -> money: " + 
 			std::to_string(objectCost.fabricCost.money) + ", " + "fiber: " +
 			std::to_string(objectCost.fabricCost.fiber));
 	}
@@ -77,38 +77,6 @@ char FabricFactory::canBuy(Player * player)
 			player->giveMoney(objectCost.fabricCost.money);
 			player->giveFabric(objectCost.fabricCost.fiber);
 			active();
-			objectCost.fabricCost.money += static_cast<unsigned short>(objectCost.fabricCost.money * 0.25);
-			objectCost.fabricCost.fiber += static_cast<unsigned short>(objectCost.fabricCost.fiber * 0.25);
-			return CAN_OPEN;
-		}
-		else
-		{
-			if (player->getMoney() < objectCost.fabricCost.money)
-			{
-				setErrorMessage("buy", "돈이 부족합니다.\n돈이나 더 모아오세요.");
-			}
-			else if (player->getFiber() < objectCost.fabricCost.fiber)
-			{
-				setErrorMessage("buy", "섬유가 부족합니다.\n섬유나 모아오세요.");
-			}
-			return CANT_BUY;
-		}
-	}
-}
-
-char FabricFactory::canBuy(Player * player, int number)
-{
-	if (checkActivate())
-	{
-		return CANT_OPEN;
-	}
-	else
-	{
-		if (player->getMoney() >= objectCost.fabricCost.money && player->getFiber() >= objectCost.fabricCost.fiber)
-		{
-			player->giveMoney(objectCost.fabricCost.money);
-			player->giveFabric(objectCost.fabricCost.fiber);
-			active(number);
 			objectCost.fabricCost.money += static_cast<unsigned short>(objectCost.fabricCost.money * 0.25);
 			objectCost.fabricCost.fiber += static_cast<unsigned short>(objectCost.fabricCost.fiber * 0.25);
 			return CAN_OPEN;

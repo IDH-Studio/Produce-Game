@@ -56,7 +56,7 @@ public:
 
 	virtual void update(Player* player) = 0;
 	virtual void render() = 0;
-	virtual char canBuy(Player* player, int number) = 0;
+	virtual char canBuy(Player* player) = 0;
 
 	// getter
 	bool checkActivate();

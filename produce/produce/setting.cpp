@@ -6,14 +6,7 @@ short screenHeight = 45;
 HANDLE hBuffer[2];
 int nScreenIndex;
 
-bool gameRun;
-bool isPause;
-char pauseState = 0b00000001;
-struct PauseArrow pauseArrow;
-
-enum INPUT_ERROR inputError = NONE;
-
-char number = 1;
+enum INPUT_ERROR inputError = INPUT_ERROR::NONE;
 struct COST objectCost;
 char objectSize = 6;
 

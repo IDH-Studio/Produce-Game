@@ -37,6 +37,9 @@
     <Filter Include="Classes\Game">
       <UniqueIdentifier>{25ea8622-902f-4f97-96f4-eb3764c45880}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Cloth Factory">
+      <UniqueIdentifier>{f2f3ae49-bb8d-4dc7-9b45-e3b76a3498ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,6 +69,9 @@
     <ClCompile Include="Game.cpp">
       <Filter>Classes\Game</Filter>
     </ClCompile>
+    <ClCompile Include="ClothFactory.cpp">
+      <Filter>Classes\Cloth Factory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="setting.h">
@@ -91,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Classes\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ClothFactory.h">
+      <Filter>Classes\Cloth Factory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

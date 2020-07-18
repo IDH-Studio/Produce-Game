@@ -2,20 +2,22 @@
 #include "setting.h"
 
 
-Player::Player() : money(objectCost.factoryCost), product(0), name("unknown"), fiber(0), fabric(0)
+Player::Player() : money(objectCost.factoryCost + 400), product(0), name("unknown"), fiber(0), fabric(20), cloth(0)
 {
 	showProduct = "product: ";
-	showMoney = "money: ";
 	showFiber = "fiber: ";
 	showFabric = "fabric: ";
+	showCloth = "cloth: ";
+	showMoney = "money: ";
 }
 
-Player::Player(std::string name) : money(objectCost.factoryCost), product(0), name(name), fiber(0), fabric(0)
+Player::Player(std::string name) : money(objectCost.factoryCost + 400), product(0), name(name), fiber(0), fabric(20), cloth(0)
 {
 	showProduct = "product: ";
-	showMoney = "money: ";
 	showFiber = "fiber: ";
 	showFabric = "fabric: ";
+	showCloth = "cloth: ";
+	showMoney = "money: ";
 }
 
 
@@ -31,7 +33,8 @@ void Player::renderInfo()
 	writeBuffer(screenWidth - 16, 33, showProduct + std::to_string(product));
 	writeBuffer(screenWidth - 16, 34, showFiber + std::to_string(fiber));
 	writeBuffer(screenWidth - 16, 35, showFabric + std::to_string(fabric));
-	writeBuffer(screenWidth - 16, 36, showMoney + std::to_string(money));
+	writeBuffer(screenWidth - 16, 36, showCloth + std::to_string(cloth));
+	writeBuffer(screenWidth - 16, 37, showMoney + std::to_string(money));
 }
 
 void Player::addProduct()
@@ -62,6 +65,16 @@ void Player::addFabric()
 void Player::addFabric(int fabric)
 {
 	this->fiber += fabric;
+}
+
+void Player::addCloth()
+{
+	++this->cloth;
+}
+
+void Player::addCloth(int cloth)
+{
+	this->cloth += cloth;
 }
 
 int Player::getMoney()
@@ -173,6 +186,32 @@ void Player::receiveFabric(int amount)
 	}
 }
 
+int Player::giveCloth(int amount)
+{
+	if (amount < 0)
+	{
+		this->cloth += amount;
+		return amount;
+	}
+	else
+	{
+		this->cloth -= amount;
+		return amount;
+	}
+}
+
+void Player::receiveCloth(int amount)
+{
+	if (amount < 0)
+	{
+		this->cloth -= amount;
+	}
+	else
+	{
+		this->cloth += amount;
+	}
+}
+
 int Player::getProduct()
 {
 	return product;
@@ -186,6 +225,11 @@ int Player::getFiber()
 int Player::getFabric()
 {
 	return fabric;
+}
+
+int Player::getCloth()
+{
+	return cloth;
 }
 
 void Player::setMoney(int money)

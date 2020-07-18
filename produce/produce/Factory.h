@@ -12,5 +12,4 @@ public:
 	void update(Player* player);
 	void render();
 	char canBuy(Player* player);
-	char canBuy(Player* player, int number);
 };

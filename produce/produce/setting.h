@@ -4,6 +4,7 @@
 
 #define GET_HANDLE GetStdHandle(STD_OUTPUT_HANDLE)
 
+#define BACKSPACE 8
 #define ENTER 13
 #define ESCAPE 27
 
@@ -47,6 +48,7 @@ namespace setting
 		FACTORY,
 		FIBER,
 		FABRIC,
+		CLOTH,
 	};
 
 	enum INPUT_ERROR
@@ -71,11 +73,18 @@ namespace setting
 		unsigned short fiber;
 	};
 
+	struct ClothCost
+	{
+		unsigned short money;
+		unsigned short fabric;
+	};
+
 	struct COST
 	{
 		unsigned short factoryCost;
 		unsigned short fiberCost;
 		struct FabricCost fabricCost;
+		struct ClothCost clothCost;
 	};
 
 	struct PauseArrow
@@ -93,14 +102,8 @@ extern short screenHeight;
 extern HANDLE hBuffer[2];
 extern int nScreenIndex;
 
-extern bool gameRun;
-extern bool isPause;
-extern char pauseState;
-extern struct PauseArrow pauseArrow;
-
 extern enum INPUT_ERROR inputError;
 
-extern char number;
 extern struct COST objectCost;
 extern char objectSize;
 

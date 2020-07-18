@@ -9,13 +9,18 @@ Game::Game()
 
 	select = SELECT::MENU;
 	area = AREA::FACTORY;
+
 	gameRun = true;
 	isPause = false;
+	pauseState = 0b00000001;
+	number = 1;
 	
 	objectCost.factoryCost = 80;
 	objectCost.fiberCost = 100;
 	objectCost.fabricCost.money = 100;
 	objectCost.fabricCost.fiber = 10;
+	objectCost.clothCost.money = 200;
+	objectCost.clothCost.fabric = 10;
 
 	pauseArrow.x = screenWidth / 2 - 7;
 	pauseArrow.y = screenHeight / 2 - 1;
@@ -26,12 +31,13 @@ Game::Game()
 		factory[i] = Factory(i);
 		fiberFarm[i] = FiberFarm(i);
 		fabricFactory[i] = FabricFactory(i);
+		clothFactory[i] = ClothFactory(i);
 	}
 
 	player = new Player();
 	store = new Store();
 
-	factory[0].canBuy(player, 0);
+	factory[0].canBuy(player);
 }
 
 
@@ -53,6 +59,7 @@ void Game::update()
 		{
 			factory[i].update(player);
 			fiberFarm[i].update(player);
+			clothFactory[i].update(player);
 		}
 
 		if (store->isOpened())
@@ -276,8 +283,8 @@ void Game::update()
 							else if (key == RIGHT_ARROW)
 							{
 								// 다른 지역이 생겼을 때 추가
-								/**area = AREA::
-								*select = MENU;*/
+								area = AREA::CLOTH;
+								select = MENU;
 							}
 						}
 						else
@@ -346,8 +353,76 @@ void Game::update()
 											}
 											else
 											{
-												//섬유 농장을 못 닫았으면(이미 닫혀있으면)
+												//섬유 농장을 못 닫았으면
 												inputError = INPUT_ERROR::EXIST;
+											}
+										}
+									}
+									else
+									{
+										inputError = INPUT_ERROR::RANGE;
+									}
+								}
+								break;
+							}
+						}
+					}
+					else if (area == AREA::CLOTH)
+					{
+						// 옷 공장
+						if (key == ARROW)
+						{
+							key = _getch();
+							if (key == LEFT_ARROW)
+							{
+								area = AREA::FABRIC;
+								select = MENU;
+							}
+							else if (key == RIGHT_ARROW)
+							{
+								// 다른 지역이 생겼을 때 추가
+								/*area = AREA::;
+								select = MENU;*/
+							}
+						}
+						else
+						{
+							switch (select)
+							{
+							case SELECT::MENU:
+								if (key == '1')
+									select = BUILD;
+								else if (key == '2')
+									store->visit(player);
+								else if (key == ESCAPE)
+									isPause = true;
+								break;
+							case SELECT::BUILD:
+								if (key == ESCAPE)
+									select = MENU;
+								else
+								{
+									if ('1' <= key && key <= '6')
+									{
+										number = key % '0';
+
+										if (1 <= number && number <= 6)
+										{
+											char tryBuy = clothFactory[number - 1].canBuy(player);
+											if (tryBuy & CAN_OPEN)
+											{
+												//옷 공장을 샀으면
+												select = MENU;
+											}
+											else if (tryBuy & CANT_OPEN)
+											{
+												//옷 공장을 작동 못 시켰으면
+												inputError = INPUT_ERROR::EXIST;
+											}
+											else if (tryBuy & CANT_BUY)
+											{
+												//옷 공장을 못 샀으면
+												inputError = INPUT_ERROR::BUY;
 											}
 										}
 									}
@@ -451,10 +526,10 @@ void Game::render()
 					switch (select)
 					{
 					case SELECT::BUILD:
-						factory[number - 1].showError(1, 32, "active");
+						factory[number - 1].showError(1, 32, "activate");
 						break;
 					case SELECT::DESTROY:
-						factory[number - 1].showError(1, 32, "deactive");
+						factory[number - 1].showError(1, 32, "deactivate");
 						break;
 					}
 				}
@@ -506,10 +581,10 @@ void Game::render()
 					switch (select)
 					{
 					case SELECT::BUILD:
-						fiberFarm[number - 1].showError(1, 32, "active");
+						fiberFarm[number - 1].showError(1, 32, "activate");
 						break;
 					case SELECT::DESTROY:
-						fiberFarm[number - 1].showError(1, 32, "deactive");
+						fiberFarm[number - 1].showError(1, 32, "deactivate");
 						break;
 					}
 				}
@@ -552,7 +627,7 @@ void Game::render()
 						break;
 					case SELECT::DESTROY:
 						setColor(WHITE);
-						writeBuffer(1, 32, "섬유 농장 번호를 입력해주세요(1 ~ 6)");
+						writeBuffer(1, 32, "섬유 공장 번호를 입력해주세요(1 ~ 6)");
 						break;
 					}
 				}
@@ -561,10 +636,10 @@ void Game::render()
 					switch (select)
 					{
 					case SELECT::BUILD:
-						fabricFactory[number - 1].showError(1, 32, "active");
+						fabricFactory[number - 1].showError(1, 32, "activate");
 						break;
 					case SELECT::DESTROY:
-						fabricFactory[number - 1].showError(1, 32, "deactive");
+						fabricFactory[number - 1].showError(1, 32, "deactivate");
 						break;
 					}
 				}
@@ -581,6 +656,56 @@ void Game::render()
 				else if (inputError == INPUT_ERROR::BUY)
 				{
 					fabricFactory[number - 1].showError(1, 32, "buy");
+				}
+			}
+			else if (area == AREA::CLOTH)
+			{
+				writeBuffer(1, 43, "옷 공장");
+				for (int i = 0; i < objectSize; i++)
+				{
+					clothFactory[i].render();
+				}
+
+				if (inputError == INPUT_ERROR::NONE)
+				{
+					switch (select)
+					{
+					case SELECT::MENU:
+						setColor(WHITE);
+						writeBuffer(1, 32, "1. 옷 공장 작동");
+						writeBuffer(1, 33, "2. 상점");
+						break;
+					case SELECT::BUILD:
+						setColor(WHITE);
+						writeBuffer(1, 32, "옷 공장 번호를 입력해주세요(1 ~ 6)");
+						break;
+					}
+				}
+				else if (inputError == INPUT_ERROR::EXIST)
+				{
+					switch (select)
+					{
+					case SELECT::BUILD:
+						clothFactory[number - 1].showError(1, 32, "activate");
+						break;
+					case SELECT::DESTROY:
+						clothFactory[number - 1].showError(1, 32, "deactivate");
+						break;
+					}
+				}
+				else if (inputError == INPUT_ERROR::RANGE)
+				{
+					switch (select)
+					{
+					case SELECT::BUILD:
+					case SELECT::DESTROY:
+						clothFactory[number - 1].showError(1, 32, "range");
+						break;
+					}
+				}
+				else if (inputError == INPUT_ERROR::BUY)
+				{
+					clothFactory[number - 1].showError(1, 32, "buy");
 				}
 			}
 		}

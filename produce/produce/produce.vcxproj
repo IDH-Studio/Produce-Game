@@ -120,6 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="ClothFactory.cpp" />
     <ClCompile Include="FabricFactory.cpp" />
     <ClCompile Include="Factory.cpp" />
     <ClCompile Include="FiberFarm.cpp" />
@@ -131,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="ClothFactory.h" />
     <ClInclude Include="FabricFactory.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="FiberFarm.h" />

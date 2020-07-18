@@ -5,15 +5,15 @@
 
 FiberFarm::FiberFarm()
 {
-	setShowProduct("fiber: ");
-	setWhatNumber("fiber farm ");
+	setShowProduct("Fiber: ");
+	setWhatNumber("Fiber Farm ");
 }
 
 
 FiberFarm::FiberFarm(int number) : BaseObject(number)
 {
-	setShowProduct("fiber: ");
-	setWhatNumber("fiber farm ");
+	setShowProduct("Fiber: ");
+	setWhatNumber("Fiber Farm ");
 }
 
 
@@ -60,7 +60,7 @@ void FiberFarm::render()
 	else
 	{
 		setColor(LIGHT_RED);
-		writeBuffer(getRect().x + 1, getRect().y + 2, "need - money: " + std::to_string(objectCost.fiberCost));
+		writeBuffer(getRect().x + 1, getRect().y + 2, "need -> money: " + std::to_string(objectCost.fiberCost));
 	}
 }
 
@@ -76,28 +76,6 @@ char FiberFarm::canBuy(Player* player)
 		{
 			player->giveMoney(objectCost.fiberCost);
 			active();
-			objectCost.fiberCost += static_cast<unsigned short>(objectCost.fiberCost * 0.25);
-			return CAN_OPEN;
-		}
-		else
-		{
-			return CANT_BUY;
-		}
-	}
-}
-
-char FiberFarm::canBuy(Player* player, int number)
-{
-	if (checkActivate())
-	{
-		return CANT_OPEN;
-	}
-	else
-	{
-		if (player->getMoney() >= objectCost.fiberCost)
-		{
-			player->giveMoney(objectCost.fiberCost);
-			active(number);
 			objectCost.fiberCost += static_cast<unsigned short>(objectCost.fiberCost * 0.25);
 			return CAN_OPEN;
 		}

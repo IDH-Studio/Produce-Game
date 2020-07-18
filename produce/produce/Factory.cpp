@@ -3,12 +3,12 @@
 
 Factory::Factory()
 {
-	setWhatNumber("factory ");
+	setWhatNumber("Factory ");
 }
 
 Factory::Factory(int number) : BaseObject(number)
 {
-	setWhatNumber("factory ");
+	setWhatNumber("Factory ");
 }
 
 
@@ -55,7 +55,7 @@ void Factory::render()
 	else
 	{
 		setColor(LIGHT_RED);
-		writeBuffer(getRect().x + 1, getRect().y + 2, "need - money: " + std::to_string(objectCost.factoryCost));
+		writeBuffer(getRect().x + 1, getRect().y + 2, "need -> money: " + std::to_string(objectCost.factoryCost));
 	}
 }
 
@@ -71,28 +71,6 @@ char Factory::canBuy(Player* player)
 		{
 			player->giveMoney(objectCost.factoryCost);
 			active();
-			objectCost.factoryCost += static_cast<unsigned short>(objectCost.factoryCost * 0.25);
-			return CAN_OPEN;
-		}
-		else
-		{
-			return CANT_BUY;
-		}
-	}
-}
-
-char Factory::canBuy(Player* player, int number)
-{
-	if (checkActivate())
-	{
-		return CANT_OPEN;
-	}
-	else
-	{
-		if (player->getMoney() >= objectCost.factoryCost)
-		{
-			player->giveMoney(objectCost.factoryCost);
-			active(number);
 			objectCost.factoryCost += static_cast<unsigned short>(objectCost.factoryCost * 0.25);
 			return CAN_OPEN;
 		}
